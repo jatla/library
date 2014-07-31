@@ -4,8 +4,10 @@ html/**
 
 config/application.yml
 
-lob/*
+log/*
 
 db/*.sqlite3
 
 tmp/*
+
+config/initializers/secret_token.rb
