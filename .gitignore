@@ -1,0 +1,11 @@
+doc/api/**
+
+html/**
+
+config/application.yml
+
+lob/*
+
+db/*.sqlite3
+
+tmp/*

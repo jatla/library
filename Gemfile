@@ -7,6 +7,11 @@ group :test, :development do
 	gem 'rspec-rails'
 end
 
+# Use omniauth-google-oauth2 for google authentication
+gem "omniauth-google-oauth2"
+gem 'devise'
+gem 'figaro'
+
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 
@@ -32,7 +37,6 @@ gem 'turbolinks'
 gem 'jbuilder', '~> 1.2'
 
 group :doc do
-  # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
 end
 
