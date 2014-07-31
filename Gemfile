@@ -12,6 +12,8 @@ gem "omniauth-google-oauth2"
 gem 'devise'
 gem 'figaro'
 
+gem "twitter-bootstrap-rails"
+
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 

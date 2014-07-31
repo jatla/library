@@ -11,3 +11,5 @@ db/*.sqlite3
 tmp/*
 
 config/initializers/secret_token.rb
+app/views/layouts/fixed.html.erb
+app/views/layouts/fluid.html.erb
