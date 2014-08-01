@@ -37,20 +37,54 @@
     <%= javascript_include_tag "application" %>
   </head>
   <body>
-
-    <div class="container">
-      <%= nav_bar :fixed => :top, :brand => "the Library", :responsive => true do %>
+    <div class="container-fluid">
+      <%= nav_bar :fluid => :top, :brand => "the Library", :responsive => true do %>
         <%= menu_group :pull => :right do %>
           <% if current_user %>
             <%= drop_down current_user.name do %>
+              <%= menu_item "#{glyph(:pencil)}Settings", destroy_user_session_path %>
+              <%= drop_down_divider %>
               <%= menu_item "Sign out", destroy_user_session_path %>
             <% end %>
           <% else %>
             <%= menu_item "Sign in with Google", user_omniauth_authorize_path(:provider => "google_oauth2") %>
           <% end %>
         <% end %>
+        <% if current_user %>
+          <%= menu_item  link_to(image_tag(current_user.avatar, class: "img-circle"), "https://plus.google.com/") %>
+        <% end %>
       <% end %>
     </div>
+    <div class="container-fluid">
+      <div class="row-fluid">
+        <div class="span3">
+          <div class="well sidebar-nav">
+            <ul class="nav nav-list">
+              <li class="nav-header">Sidebar</li>
+              <li><%= link_to "Home", home_index_path  %></li>
+            </ul>
+          </div><!--/.well -->
+        </div><!--/span-->
+        <div class="span9">
+          <%= bootstrap_flash %>
+          <%= yield %>
+        </div>
+      </div><!--/row-->
+    </div>
+    <footer>
+      <div class="container-fluid">
+        <%= nav_bar :fixed => :bottom, :responsive => true do %>
+          <%= menu_group do %>
+            <%= menu_item "Home", home_index_path %>
+            <%= menu_divider %>
+            <% if current_user %>
+              <%= menu_item "Sign out", destroy_user_session_path %>
+            <% end %>
+          <% end %>
+            <%= menu_text "(c) ViswaJyothi Schools 2014", :pull => :right %>
+        <% end %>
+      </div>
+    </footer>
 
   </body>
 </html>
