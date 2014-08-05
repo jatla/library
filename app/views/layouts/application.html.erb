@@ -42,7 +42,7 @@
         <%= menu_group :pull => :right do %>
           <% if current_user %>
             <%= drop_down current_user.name do %>
-              <%= menu_item "#{glyph(:pencil)}Settings", destroy_user_session_path %>
+              <%= menu_item "Settings", destroy_user_session_path %>
               <%= drop_down_divider %>
               <%= menu_item "Sign out", destroy_user_session_path %>
             <% end %>
@@ -57,19 +57,23 @@
     </div>
     <div class="container-fluid">
       <div class="row-fluid">
-        <div class="span3">
+        <div class="span2">
           <div class="well sidebar-nav">
             <ul class="nav nav-list">
-              <li class="nav-header">Sidebar</li>
               <li><%= link_to "Home", home_index_path  %></li>
+              <% if current_user.try(:is_admin?) %>
+                <li><%= link_to "Users", users_path  %></li>
+              <% end %>
             </ul>
-          </div><!--/.well -->
-        </div><!--/span-->
-        <div class="span9">
-          <%= bootstrap_flash %>
-          <%= yield %>
+          </div>
         </div>
-      </div><!--/row-->
+        <div class="span10">
+          <div class="container-fluid">
+            <%= bootstrap_flash %>
+            <%= yield %>
+          </div>
+        </div>
+      </div>
     </div>
     <footer>
       <div class="container-fluid">

@@ -1,0 +1,31 @@
+<%= form_for(@user) do |f| %>
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title"> <%= @user.name %></h3>
+  </div>
+  <div class="panel-body">
+  <table>
+    <tbody>
+      <tr>
+        <td><%= f.label :name, :class => 'control_label' %></td>
+        <td><%= f.text_field :name, :class => 'text_field' %></td>
+      </tr>
+      <tr>
+        <td><%= f.label :email, :class => 'control_label'  %></td>
+        <td><%= f.text_field :email, :class => 'text_field' %></td>
+      </tr>
+      <tr>
+        <td><%= f.label :is_admin, :class => 'control_label'  %></td>
+        <td><%= f.check_box :is_admin, :class => 'check_box' %></td>
+      </tr>
+      <tr>
+        <td>
+              <%= f.submit nil, :class => 'btn btn-primary' %>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+<% end %>
+

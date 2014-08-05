@@ -6,7 +6,10 @@ Library::Application.routes.draw do
     get 'sign_in', to: 'home#index', as: :new_user_session
     get 'sign_out', to: 'devise/sessions#destroy', as: :destroy_user_session
   end
+  #resources :users
 
+  get '/users', to: 'users#index', as: :users
+  get '/users/:id/edit(.:format)', to: 'users#edit', as: :edit_user
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
