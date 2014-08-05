@@ -14,6 +14,9 @@ gem 'figaro'
 
 gem "twitter-bootstrap-rails"
 
+# Use AWS for emailer, S3 and SimpleDB
+gem 'aws-sdk', '~> 1.0'
+
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3'
 

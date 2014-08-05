@@ -20,6 +20,10 @@ Library::Application.configure do
   config.consider_all_requests_local       = true
   config.action_controller.perform_caching = false
 
+  # Raise error if application can't send a mail
+  config.action_mailer.raise_delivery_errors = true
+  config.action_mailer.delivery_method = :amazon_ses
+
   # Raise exceptions instead of rendering exception templates.
   config.action_dispatch.show_exceptions = false
 
@@ -33,4 +37,6 @@ Library::Application.configure do
 
   # Print deprecation notices to the stderr.
   config.active_support.deprecation = :stderr
+
+  config.action_mailer.default_url_options = { host: 'localhost:3000' }
 end
