@@ -5,6 +5,7 @@ gem 'rails', '4.0.3'
 
 group :test, :development do
 	gem 'rspec-rails'
+	gem 'simplecov', :require => false
 end
 
 # Use omniauth-google-oauth2 for google authentication
