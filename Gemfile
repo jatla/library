@@ -1,7 +1,9 @@
 source 'https://rubygems.org'
 
+ruby '2.1.1'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
-gem 'rails', '4.0.3'
+gem 'rails', '4.1.4'
 
 group :test, :development do
 	gem 'rspec-rails'
@@ -12,6 +14,10 @@ end
 gem "omniauth-google-oauth2"
 gem 'devise'
 gem 'figaro'
+
+# Use carrierwave in combination with S3 for storing images
+gem 'carrierwave'
+gem 'fog', require: "fog/aws/storage"
 
 gem "twitter-bootstrap-rails"
 
