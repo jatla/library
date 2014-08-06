@@ -1,28 +1,31 @@
-<div class="panel panel-info">
-  <div class="panel-heading">
-    <h3 class="panel-title"> Users </h3>
-  </div>
-  <div class="panel-body">
-  <table class="table table-striped">
-    <thead>
+<%- model_class = User -%>
+<div class="page-header">
+  <h3><%=t '.title', :default => model_class.model_name.human.pluralize.titleize %></h3>
+</div>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name(:id) %></th>
+      <th><%= model_class.human_attribute_name(:name) %></th>
+      <th><%= model_class.human_attribute_name(:avatar) %></th>
+      <th><%= model_class.human_attribute_name(:email) %></th>
+      <th><%= model_class.human_attribute_name(:is_admin) %></th>
+      <th><%= model_class.human_attribute_name(:created_at) %></th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @users.each do |user| %>
       <tr>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Is Admin</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @users.each do |user| %>
-      <tr>
+        <td><%= user.id %></td>
         <td><%= user.name %></td>
+        <td><%= image_tag(user.avatar, class: "img-circle") %></td>
         <td><%= user.email %></td>
         <td><%= user.is_admin %></td>
+        <td><%=l user.created_at %></td>
         <td><%= link_to glyph(:pencil, {:tag => :span}), edit_user_path(user) %></td>
       </tr>
-      <% end %>
-    </tbody>
-  </table>
-  </div>
-</div>
-
+    <% end %>
+  </tbody>
+</table>
 

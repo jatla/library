@@ -1,31 +1,35 @@
-<%= form_for(@user) do |f| %>
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title"> <%= @user.name %></h3>
-  </div>
-  <div class="panel-body">
-  <table>
-    <tbody>
-      <tr>
-        <td><%= f.label :name, :class => 'control_label' %></td>
-        <td><%= f.text_field :name, :class => 'text_field' %></td>
-      </tr>
-      <tr>
-        <td><%= f.label :email, :class => 'control_label'  %></td>
-        <td><%= f.text_field :email, :class => 'text_field' %></td>
-      </tr>
-      <tr>
-        <td><%= f.label :is_admin, :class => 'control_label'  %></td>
-        <td><%= f.check_box :is_admin, :class => 'check_box' %></td>
-      </tr>
-      <tr>
-        <td>
-              <%= f.submit nil, :class => 'btn btn-primary' %>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  </div>
+<%= form_for @user, :html => { :class => 'form-horizontal' } do |f| %>
+<div class="page-header">
+  <h4><%=t @user.name%></h4>
 </div>
-<% end %>
+  <div class="control-group">
+    <%= f.label :name, :class => 'control-label' %>
+    <div class='control-label'>
+      <%= @user.name %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :avatar, :class => 'control-label' %>
+    <div class='control-label'>
+      <%= image_tag(@user.avatar, class: "img-circle") %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :email, :class => 'control-label' %>
+    <div class='control-label'>
+      <%= @user.email %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :is_admin, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.check_box :is_admin, :class => 'check_box' %>
+    </div>
+  </div>
 
+  <div class="form-actions">
+    <%= f.submit nil, :class => 'btn btn-primary' %>
+    <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+                users_path, :class => 'btn' %>
+  </div>
+<% end %>
