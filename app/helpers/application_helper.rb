@@ -20,7 +20,11 @@ module ApplicationHelper
 		end
 	end
 
-	def to_be_approved_books
-	    Book.all.each { |b| b if !b.is_approved?}
+	def can_be_approved (resource)
+		if user_signed_in? && !resource.nil? && resource.respond_to?(:image)
+			current_user.try(:is_admin?) && !resource.try(:image).nil? && resource.try(:image).length > 0
+		else
+			false
+		end
 	end
 end

@@ -10,6 +10,9 @@ group :test, :development do
 	gem 'simplecov', :require => false
 end
 
+# Used for cleaning up controller code
+gem 'responders'
+
 # Use omniauth-google-oauth2 for google authentication
 gem "omniauth-google-oauth2"
 gem 'devise'
