@@ -4,8 +4,11 @@ class BooksController < ApplicationController
   # GET /books
   # GET /books.json
   def index
-    @books = Book.all
-    @approved_books = Book.where("is_approved = ?", true)
+    if current_user.try(:is_admin?)
+      @books = Book.all
+    else
+      @books = Book.where("is_approved = ? or user_id = ?", true, current_user.id)
+    end
   end
 
   # GET /books/1
@@ -45,7 +48,7 @@ class BooksController < ApplicationController
   # PATCH/PUT /books/1
   # PATCH/PUT /books/1.json
   def update
-    if ( (user_signed_in? && @book.user_id == current_user.id) || current_user.try(:is_admin?))
+    if ( view_context.is_admin? || view_context.is_owner(@book))
       respond_to do |format|
         if @book.update(book_params)
           format.html { redirect_to @book, notice: 'Book was successfully updated.' }
@@ -61,7 +64,7 @@ class BooksController < ApplicationController
   # DELETE /books/1
   # DELETE /books/1.json
   def destroy
-    if ( user_signed_in? && @book.user_id == current_user.id )
+    if ( view_context.is_admin? || view_context.is_owner(@book) )
       @book.destroy
       respond_to do |format|
         format.html { redirect_to books_url }

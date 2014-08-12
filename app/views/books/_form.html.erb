@@ -23,13 +23,15 @@
       <%= f.text_field :image, :class => 'text_field' %>
     </div>
   </div>
-  <div class="control-group">
-    <%= f.label :is_active, :class => 'control-label' %>
-    <div class="controls">
-      <%= f.check_box :is_active, :class => 'check_box' %>
+  <% if @book.is_approved? %>
+    <div class="control-group">
+      <%= f.label :is_active, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.check_box :is_active, :class => 'check_box' %>
+      </div>
     </div>
-  </div>
-  <% if current_user.try(:is_admin?) %>
+  <% end %>
+  <% if current_user.try(:is_admin?) && !@book.image.nil? %>
     <div class="control-group">
       <%= f.label :is_approved, :class => 'control-label' %>
       <div class="controls">

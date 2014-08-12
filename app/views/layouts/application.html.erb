@@ -41,7 +41,15 @@
       <%= nav_bar :fluid => :top, :brand => "the Library", :responsive => true do %>
         <%= menu_group :pull => :right do %>
           <% if current_user %>
-            <%= drop_down current_user.name do %>
+            <%= drop_down_with_submenu current_user.name do %>
+              <% if current_user.try(:is_admin?) %>
+                <%= drop_down_submenu "Admin" do %>
+                  <%= menu_item "Users", users_path %>
+                  <%= menu_item "Reports", users_path %>
+                  <%= menu_item "Book Management", users_path %>
+                <% end %>
+                <%= drop_down_divider %>
+              <% end %>
               <%= menu_item "Settings", destroy_user_session_path %>
               <%= drop_down_divider %>
               <%= menu_item "Sign out", destroy_user_session_path %>
@@ -62,9 +70,6 @@
             <ul class="nav nav-list">
               <li><%= link_to "Home", home_index_path  %></li>
               <li><%= link_to "Books", books_path  %></li>
-              <% if current_user.try(:is_admin?) %>
-                <li><%= link_to "Users", users_path  %></li>
-              <% end %>
             </ul>
           </div>
         </div>
