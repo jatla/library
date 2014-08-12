@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140806052201) do
+ActiveRecord::Schema.define(version: 20140808022743) do
 
   create_table "books", force: true do |t|
     t.string   "title"
@@ -22,7 +22,11 @@ ActiveRecord::Schema.define(version: 20140806052201) do
     t.boolean  "is_approved"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.decimal  "avg_rating",  precision: 3, scale: 2
+    t.integer  "user_id"
   end
+
+  add_index "books", ["user_id"], name: "index_books_on_user_id"
 
   create_table "users", force: true do |t|
     t.string   "provider"
@@ -38,6 +42,7 @@ ActiveRecord::Schema.define(version: 20140806052201) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "is_admin",           default: false
+    t.boolean  "is_blocked",         default: false
   end
 
   add_index "users", ["email"], name: "index_users_on_email", unique: true

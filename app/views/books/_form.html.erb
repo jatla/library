@@ -26,15 +26,17 @@
   <div class="control-group">
     <%= f.label :is_active, :class => 'control-label' %>
     <div class="controls">
-      <%= f.text_field :is_active, :class => 'text_field' %>
+      <%= f.check_box :is_active, :class => 'check_box' %>
     </div>
   </div>
-  <div class="control-group">
-    <%= f.label :is_approved, :class => 'control-label' %>
-    <div class="controls">
-      <%= f.text_field :is_approved, :class => 'text_field' %>
+  <% if current_user.try(:is_admin?) %>
+    <div class="control-group">
+      <%= f.label :is_approved, :class => 'control-label' %>
+      <div class="controls">
+        <%= f.check_box :is_approved, :class => 'check_box' %>
+      </div>
     </div>
-  </div>
+  <% end %>
 
   <div class="form-actions">
     <%= f.submit nil, :class => 'btn btn-primary' %>
