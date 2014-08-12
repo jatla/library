@@ -2,3 +2,7 @@ library
 =======
 
 User managed library as final AdvanceSummer2014 project.
+
+Code Climate: {<img src="https://codeclimate.com/github/jatla/library/badges/gpa.svg" />}[https://codeclimate.com/github/jatla/library]
+
+Test Coverage: {<img src="https://codeclimate.com/github/jatla/library/badges/coverage.svg" />}[https://codeclimate.com/github/jatla/library]
