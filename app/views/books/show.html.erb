@@ -2,20 +2,25 @@
 <div class="page-header">
   <h1><%=t '.title', :default => @book.title.titleize %></h1>
 </div>
-
-<dl class="dl-horizontal">
-  <dt><strong><%= model_class.human_attribute_name(:title) %>:</strong></dt>
-  <dd><%= @book.title %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:author) %>:</strong></dt>
-  <dd><%= @book.author %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:isbn) %>:</strong></dt>
-  <dd><%= @book.isbn %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:avg_rating) %>:</strong></dt>
-  <dd><%= @book.avg_rating %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:image) %>:</strong></dt>
-  <dd><%= @book.image %></dd>
-</dl>
-
+<div class="row-fluid">
+  <div class="span3">
+    <dl class="dl-horizontal">
+      <dt><strong><%= model_class.human_attribute_name(:title) %>:</strong></dt>
+      <dd><%= @book.title %></dd>
+      <dt><strong><%= model_class.human_attribute_name(:author) %>:</strong></dt>
+      <dd><%= @book.author %></dd>
+      <dt><strong><%= model_class.human_attribute_name(:isbn) %>:</strong></dt>
+      <dd><%= @book.isbn %></dd>
+      <dt><strong><%= model_class.human_attribute_name(:avg_rating) %>:</strong></dt>
+      <dd><%= @book.avg_rating %></dd>
+    </dl>
+  </div>
+  <div class="span7">
+    <dl class="dl-horizontal">
+      <dd><%= image_tag(@book.image_url, class: "img") if @book.image? %></dd>
+    </dl>
+  </div>
+</div>
 <div class="form-actions">
   <%= link_to t('.back', :default => t("helpers.links.back")),
               books_path, :class => 'btn'  %>

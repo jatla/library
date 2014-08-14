@@ -20,6 +20,7 @@ gem 'figaro'
 
 # Use carrierwave in combination with S3 for storing images
 gem 'carrierwave'
+gem "mini_magick"
 gem 'fog', require: "fog/aws/storage"
 
 gem "twitter-bootstrap-rails"
