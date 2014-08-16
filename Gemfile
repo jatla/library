@@ -18,6 +18,9 @@ gem "omniauth-google-oauth2"
 gem 'devise'
 gem 'figaro'
 
+# Use the following plugin for star rating
+gem 'jquery-star-rating-rails'
+
 # Use carrierwave in combination with S3 for storing images
 gem 'carrierwave'
 gem "mini_magick"
