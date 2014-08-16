@@ -38,6 +38,10 @@
       <%= link_to 'Add Review', new_book_review_path(@book.id), :class => 'btn btn-mini' %>
     <% end %>
   <% end %>
-  <%= render :partial => "reviews/index", locals: {:book_id => @book.id}  %>
+  <div class="page-header">
+  </div>
+  <div class="row-fluid">
+    <%= render "reviews" %>
+  </div>
 </div>
 
