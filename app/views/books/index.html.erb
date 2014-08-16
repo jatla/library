@@ -38,7 +38,7 @@
             <%= link_to t('.edit', :default => t("helpers.links.edit")),
                         edit_book_path(book), :class => 'btn btn-mini' %>
 
-            <% if ( !book.has_reviews? ) %>
+            <% if ( book.reviews.empty? ) %>
               <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
                           book_path(book),
                           :method => :delete,

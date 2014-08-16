@@ -4,7 +4,7 @@ class BooksController < ApplicationController
   # GET /books
   # GET /books.json
   def index
-    if current_user.try(:is_admin?)
+    if view_context.is_admin?
       @books = Book.all
     elsif user_signed_in?
       @books = Book.where("is_approved = ? or user_id = ?", true, current_user.id)
@@ -16,7 +16,6 @@ class BooksController < ApplicationController
   # GET /books/1
   # GET /books/1.json
   def show
-    @reviews = Review.where("book_id = ?", @book.id)
   end
 
   # GET /books/new
