@@ -1,6 +1,8 @@
 Library::Application.routes.draw do
 
-  resources :books
+  resources :books do
+    resources :reviews
+  end
 
   get "home/index"
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }

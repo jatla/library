@@ -1,0 +1,16 @@
+<%= form_for @review, :url => {:action => action}, :html => { :class => 'form-horizontal' } do |f| %>
+  <div class="control-group">
+    <%= f.label :description, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_area :description, :class => 'text_area' %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :rating, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.text_field :rating, :class => 'text_field' %>
+    </div>
+  </div>
+
+  <%= f.submit nil, :method => 'put', :class => 'btn btn-primary' %>
+<% end %>

@@ -1,0 +1,30 @@
+<%- model_class = Review -%>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name(:rating) %></th>
+      <th><%= model_class.human_attribute_name(:description) %></th>
+      <th><%=t '.actions', :default => t("helpers.actions") %></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @reviews.each do |review| %>
+      <tr>
+        <td><%= review.rating %></td>
+        <td><%= review.description %></td>
+        <td>
+          <%= link_to 'Details', :default => book_review_path(review), :class => 'btn btn-mini' %>
+          <% if ( ( is_admin? || is_owner?(review)) ) %>
+            <%= link_to t('.edit', :default => t("helpers.links.edit")),
+                        edit_book_review_path(review), :class => 'btn btn-mini' %>
+            <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                        book_review_path(review),
+                        :method => :delete,
+                        :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                        :class => 'btn btn-mini btn-danger' %>
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
