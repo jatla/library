@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   devise :trackable, :omniauthable, omniauth_providers: [:google_oauth2]
   has_many :books
-
+  has_many :reviews
 
   def books
     Book.where("user_id = ?", self.id)
