@@ -13,18 +13,22 @@ class ReviewsController < ApplicationController
 
   def new
     @review = Review.new
+    session[:prev_page] = request.env['HTTP_REFERER']
     respond_with(@book, @review)
   end
 
   def edit
+    session[:prev_page] = request.env['HTTP_REFERER']
   end
 
   def create
     @review = Review.new(review_params)
     @review.user_id = current_user.id
     @review.book_id = @book.id
-    @review.save
-    respond_with(@book)
+    if !@review.save
+      flash[:error] = "Could not save review!"
+    end
+      respond_with(@book)
   end
 
   def update
@@ -34,7 +38,7 @@ class ReviewsController < ApplicationController
 
   def destroy
     @review.destroy
-    respond_with(@book, @review)
+    redirect_to(:back)
   end
 
   private
