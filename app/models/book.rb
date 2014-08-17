@@ -1,7 +1,7 @@
 class Book < ActiveRecord::Base
 	belongs_to :user
 	mount_uploader :image, S3Uploader
-
+    validates :title, :author, :isbn, presence: true
 	has_many :reviews
 
 	def avg_rating
