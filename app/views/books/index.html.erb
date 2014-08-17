@@ -8,8 +8,12 @@
     <% end %>
   <% end %>
 <% end %>
-
-<table class="table table-striped">
+<script>
+  $(document).ready(function() {
+      $('#books').dataTable();
+  } );
+</script>
+<table id="books" class="table table-striped">
   <thead>
     <tr>
       <th><%= model_class.human_attribute_name(" ") %></th>

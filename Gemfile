@@ -21,6 +21,9 @@ gem 'figaro'
 # Use the following plugin for star rating
 gem 'jquery-star-rating-rails'
 
+# Use the following gem for enabling search on data tables
+gem 'jquery-datatables-rails'
+
 # Use carrierwave in combination with S3 for storing images
 gem 'carrierwave'
 gem "mini_magick"

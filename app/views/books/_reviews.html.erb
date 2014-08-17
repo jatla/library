@@ -1,5 +1,10 @@
 <%- model_class = Review -%>
-<table class="table table-striped">
+<script>
+  $(document).ready(function() {
+      $('#book-reviews').dataTable();
+  } );
+</script>
+<table id="book-reviews" class="table table-striped">
   <thead>
     <tr>
       <th><%= model_class.human_attribute_name(:rating) %></th>
