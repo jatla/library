@@ -27,6 +27,8 @@ class ReviewsController < ApplicationController
     @review.book_id = @book.id
     if !@review.save
       flash[:error] = "Could not save review!"
+    else
+      LibraryMailer.on_new_review(@review, @book).deliver
     end
       respond_with(@book)
   end

@@ -2,18 +2,12 @@ require 'aws/core'
 require 'aws/simple_email_service'
 
 class LibraryMailer < ActionMailer::Base
-  default from: "atla@viswajyothischools.org"
+  default from: "library@viswajyothischools.org"
 
-  def send(email)
-  	ses = AWS::SimpleEmailService.new(
-          :access_key_id => ENV["AWS_ACCESS_KEY"],
-          :secret_access_key => ENV["AWS_SECRET_KEY"])
-
-  	identity = ses.identities.verify(email)
-  	if identity.verified?
-    	mail(:to => email, :subject => "Verifying your registration with 'the Library'")
-    else
-
-    end
+  def on_new_review(review, book)
+    @review = review
+    @book = book
+    @user = User.find(book.user_id)
+    mail(:to => @user.email, :subject => "Review of the book: #{@book.title}")
   end
 end

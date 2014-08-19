@@ -15,7 +15,17 @@ Library::Application.configure do
 
   # Raise error if application can't send a mail
   config.action_mailer.raise_delivery_errors = true
-  config.action_mailer.delivery_method = :amazon_ses
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+      :address => "email-smtp.us-west-2.amazonaws.com",
+      :user_name => ENV["SMTP_USER"], # Your SMTP user here.
+      :password => ENV["SMTP_PWD"], # Your SMTP password here.
+      :domain => "viswajyothischools.org",
+      :port => 465,
+      :authentication => :login,
+      :enable_starttls_auto => true,
+      :ssl => true
+  }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
