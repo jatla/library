@@ -4,6 +4,8 @@ Library::Application.routes.draw do
     resources :reviews
   end
 
+  get '/books/:id/follow(.:format)', to: 'books#follow', as: :follow_book
+
   get "home/index"
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
   devise_scope :user do
@@ -14,6 +16,7 @@ Library::Application.routes.draw do
   get '/users', to: 'users#index', as: :users
   match '/users/:id', to: 'users#update', as: :user, via: [:get, :patch]
   get '/users/:id/edit(.:format)', to: 'users#edit', as: :edit_user
+  get '/home/reports(.:format)', to: 'home#reports', as: :user_reports
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

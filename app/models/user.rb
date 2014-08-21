@@ -3,6 +3,9 @@ class User < ActiveRecord::Base
   has_many :books
   has_many :reviews
 
+  has_many :follows
+  has_many :followed_books, through: :follows, source: "Book"
+
   def books
     Book.where("user_id = ?", self.id)
   end

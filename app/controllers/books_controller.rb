@@ -1,5 +1,5 @@
 class BooksController < ApplicationController
-  before_action :set_book, only: [:show, :edit, :update, :destroy]
+  before_action :set_book, only: [:show, :edit, :update, :destroy, :follow]
 
   # GET /books
   # GET /books.json
@@ -55,6 +55,22 @@ class BooksController < ApplicationController
     if ( view_context.is_admin? || view_context.is_owner?(@book) )
       @book.destroy
       respond_with(@book, :flash => true)
+    end
+  end
+
+  def follow
+    if user_signed_in?
+      @follow = Follow.new
+      @follow.user_id = current_user.id
+      @follow.book_id = @book.id
+      if !@follow.save
+        flash[:error] = "Unexpected error <@#$%^&!>. Please try after some time."
+      else
+        flash[:notice] = "You have elected to follow this book.
+                              You would receivereview/rating mails, if enabled in preferences."
+        LibraryMailer.on_follow(@follow).deliver
+      end
+      redirect_to request.env["HTTP_REFERER"]
     end
   end
 
