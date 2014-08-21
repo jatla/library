@@ -4,7 +4,11 @@
     <%= drop_down_with_submenu "Actions" do %>
       <% if ( user_signed_in? && @book.is_active? ) %>
         <%= menu_item 'Add Review', new_book_review_path(@book.id) %>
-        <%= menu_item 'Follow', follow_book_path(@book) %>
+        <% if ( !is_followed?(@book.id) ) %>
+          <%= menu_item 'Follow', follow_book_path(@book) %>
+        <% else %>
+          <%= menu_item 'Stop Following', stop_following_book_path(@book) %>
+        <% end %>
       <% end %>
       <% if ( ( is_admin? || is_owner?(@book)) ) %>
       <%= drop_down_divider %>

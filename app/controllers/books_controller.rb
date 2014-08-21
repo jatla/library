@@ -1,5 +1,5 @@
 class BooksController < ApplicationController
-  before_action :set_book, only: [:show, :edit, :update, :destroy, :follow]
+  before_action :set_book, only: [:show, :edit, :update, :destroy, :follow, :stop_following]
 
   # GET /books
   # GET /books.json
@@ -64,13 +64,25 @@ class BooksController < ApplicationController
       @follow.user_id = current_user.id
       @follow.book_id = @book.id
       if !@follow.save
-        flash[:error] = "Unexpected error <@#$%^&!>. Please try after some time."
+        flash[:error] = "Unable to process your request. Please try after some time."
       else
         flash[:notice] = "You have elected to follow this book.
-                              You would receivereview/rating mails, if enabled in preferences."
+                              You would receive review/rating mails, if enabled in preferences."
         LibraryMailer.on_follow(@follow).deliver
       end
-      redirect_to request.env["HTTP_REFERER"]
+    end
+    render 'show'
+  end
+
+  def stop_following
+    if user_signed_in?
+      count = Follow.delete_all(["book_id = ? AND user_id = ?", @book.id, current_user.id])
+      if !count
+        flash[:error] = "Unable to process your request. Please try after some time."
+      else
+        flash[:notice] = "You had stopped following this book successfully."
+      end
+      render 'show'
     end
   end
 

@@ -6,6 +6,7 @@ Library::Application.routes.draw do
   end
 
   get '/books/:id/follow(.:format)', to: 'books#follow', as: :follow_book
+  get '/books/:id/stop_following(.:format)', to: 'books#stop_following', as: :stop_following_book
 
   get "home/index"
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
