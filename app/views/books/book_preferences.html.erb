@@ -1,0 +1,16 @@
+<%- model_class = OptedOut -%>
+<div class="page-header">
+  <h3>Book Preferences</h3>
+</div>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name(:opt_out_by_rating) %>:</strong></dt>
+  <dd><%= @book_preferences.by_rating %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:rating_threshold) %>:</strong></dt>
+  <dd><%= @book_preferences.rating_threshold %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:opt_out_by_review) %>:</strong></dt>
+  <dd><%= @book_preferences.by_review %></dd>
+</dl>
+
+<%= link_to t('.edit', :default => t("helpers.links.edit")),
+              edit_user_config_path(@user_config), :class => 'btn' %>

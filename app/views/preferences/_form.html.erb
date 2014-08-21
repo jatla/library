@@ -1,0 +1,17 @@
+<%= form_for(@book_preference) do |f| %>
+  <% if @book_preference.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@book_preference.errors.count, "error") %> prohibited this book_preference from being saved:</h2>
+
+      <ul>
+      <% @book_preference.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="actions">
+    <%= f.submit %>
+  </div>
+<% end %>

@@ -6,6 +6,9 @@ class User < ActiveRecord::Base
   has_many :follows
   has_many :followed_books, through: :follows, source: "Book"
 
+  has_many :opted_outs
+  has_many :opted_out_books, through: :opted_outs, source: "Book"
+
   def books
     Book.where("user_id = ?", self.id)
   end

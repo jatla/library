@@ -3,6 +3,7 @@ Library::Application.routes.draw do
   resources :user_configs
   resources :books do
     resources :reviews
+    resources :preferences
   end
 
   get '/books/:id/follow(.:format)', to: 'books#follow', as: :follow_book
