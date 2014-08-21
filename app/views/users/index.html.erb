@@ -10,6 +10,7 @@
       <th><%= model_class.human_attribute_name(:avatar) %></th>
       <th><%= model_class.human_attribute_name(:email) %></th>
       <th><%= model_class.human_attribute_name(:is_admin) %></th>
+      <th><%= model_class.human_attribute_name(:is_blocked) %></th>
       <th><%= model_class.human_attribute_name(:member_since) %></th>
       <th><%=t '.actions', :default => t("helpers.actions") %></th>
     </tr>
@@ -22,6 +23,7 @@
         <td><%= image_tag(user.avatar, class: "img-circle") %></td>
         <td><%= user.email %></td>
         <td><%= user.is_admin %></td>
+        <td><%= user.is_blocked %></td>
         <td><%= user.created_at %></td>
         <td><%= link_to glyph(:pencil, {:tag => :span}), edit_user_path(user) %></td>
       </tr>
