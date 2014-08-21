@@ -12,9 +12,11 @@ class ReviewsController < ApplicationController
   end
 
   def new
-    @review = Review.new
-    session[:prev_page] = request.env['HTTP_REFERER']
-    respond_with(@book, @review)
+    if (view_context.can_be_reviewed(@book))
+      @review = Review.new
+      session[:prev_page] = request.env['HTTP_REFERER']
+      respond_with(@book, @review)
+    end
   end
 
   def edit
@@ -22,15 +24,17 @@ class ReviewsController < ApplicationController
   end
 
   def create
-    @review = Review.new(review_params)
-    @review.user_id = current_user.id
-    @review.book_id = @book.id
-    if !@review.save
-      flash[:error] = "Could not save review!"
-    else
-      LibraryMailer.on_new_review(@review).deliver
-    end
+    if (view_context.can_be_reviewed(@book))
+      @review = Review.new(review_params)
+      @review.user_id = current_user.id
+      @review.book_id = @book.id
+      if !@review.save
+        flash[:error] = "Could not save review!"
+      else
+        LibraryMailer.on_new_review(@review).deliver
+      end
       respond_with(@book)
+    end
   end
 
   def update

@@ -28,6 +28,10 @@ module ApplicationHelper
 		end
 	end
 
+	def can_be_reviewed?(book)
+		 user_signed_in? && book.is_active? && !current_user.is_blocked? 
+	end
+	
 	def bootstrap_class_for flash_type
     case flash_type
       when :success

@@ -35,7 +35,7 @@
         <td><%= book.isbn %></td>
         <td><%= book.avg_rating %></td>
         <td>
-          <% if ( user_signed_in? && book.is_active? ) %>
+          <% if (can_be_reviewed?(book)) %>
             <%= link_to 'Review', new_book_review_path(book.id), :class => 'btn btn-mini' %>
           <% end %>
           <% if ( is_admin? || is_owner?(book)) %>

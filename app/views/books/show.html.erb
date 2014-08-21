@@ -2,7 +2,7 @@
 <%= nav_bar :fluid => :top, :brand => @book.title.titleize, :responsive => true do %>
   <%= menu_group :pull => :right do %>
     <%= drop_down_with_submenu "Actions" do %>
-      <% if ( user_signed_in? && @book.is_active? ) %>
+      <% if ( can_be_reviewed?(@book) ) %>
         <%= menu_item 'Add Review', new_book_review_path(@book.id) %>
         <% if ( !is_followed?(@book.id) ) %>
           <%= menu_item 'Follow', follow_book_path(@book) %>
