@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140819053654) do
+ActiveRecord::Schema.define(version: 20140821030725) do
 
   create_table "books", force: true do |t|
     t.string   "title"
@@ -44,6 +44,16 @@ ActiveRecord::Schema.define(version: 20140819053654) do
 
   add_index "reviews", ["book_id"], name: "index_reviews_on_book_id"
   add_index "reviews", ["user_id"], name: "index_reviews_on_user_id"
+
+  create_table "user_configs", force: true do |t|
+    t.integer  "user_id"
+    t.integer  "rating_threshold"
+    t.boolean  "opt_out_by_rating"
+    t.boolean  "opt_out_by_review"
+    t.boolean  "daily_digest_enabled"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "users", force: true do |t|
     t.string   "provider"

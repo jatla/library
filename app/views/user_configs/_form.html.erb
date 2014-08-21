@@ -1,0 +1,34 @@
+<%= form_for @user_config, :html => { :class => 'form-horizontal' } do |f| %>
+
+  <div class="control-group">
+    <%= f.label :opt_out_by_rating, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.check_box :opt_out_by_rating, :class => 'check_box' %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :rating_threshold, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.select(:rating_threshold, options_for_select([["1", 1], ["2", 2], ["3", 3], ["4", 4], ["5", 5]], @user_config.rating_threshold)) %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :opt_out_by_review, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.check_box :opt_out_by_review, :class => 'check_box' %>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <%= f.label :daily_digest_enabled, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.check_box :daily_digest_enabled, :class => 'check_box' %>
+    </div>
+  </div>
+
+  <%= f.submit nil, :class => 'btn btn-primary' %>
+  <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+              user_config_path(current_user.id), :class => 'btn' %>
+<% end %>

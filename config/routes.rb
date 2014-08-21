@@ -1,5 +1,6 @@
 Library::Application.routes.draw do
 
+  resources :user_configs
   resources :books do
     resources :reviews
   end

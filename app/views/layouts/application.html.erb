@@ -40,7 +40,7 @@
     <div class="container-fluid">
       <%= nav_bar :fluid => :top, :brand => "the Library", :responsive => true do %>
         <%= menu_group :pull => :right do %>
-          <% if current_user %>
+          <% if user_signed_in? %>
             <%= drop_down_with_submenu image_tag(current_user.avatar, class: "img-circle") do %>
               <% if current_user.try(:is_admin?) %>
                 <%= drop_down_submenu "Admin" do %>
@@ -49,7 +49,7 @@
                 <% end %>
                 <%= drop_down_divider %>
               <% end %>
-              <%= menu_item "Settings", destroy_user_session_path %>
+              <%= menu_item "Preferences", user_config_path(current_user.id) %>
               <%= drop_down_divider %>
               <%= menu_item "Sign out", destroy_user_session_path %>
             <% end %>
