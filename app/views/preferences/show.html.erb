@@ -1,4 +1,14 @@
-<h3>Preferences for <%= @book.title %></h3>
+<%- model_class = OptedOut -%>
+<h4>Preferences for <%= @book.title %></h4>
 
-<%= link_to 'Edit', edit_book_preference_path(@book_preference) %> |
-<%= link_to 'Back', book_path %>
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name(:opt_out_rating) %>:</strong></dt>
+  <dd><%= @book_preference.by_rating %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:rating_threshold) %>:</strong></dt>
+  <dd><%= @book_preference.rating_threshold %></dd>
+  <dt><strong><%= model_class.human_attribute_name(:opt_out_by_review) %>:</strong></dt>
+  <dd><%= @book_preference.by_review %></dd>
+</dl>
+
+<%= link_to 'Edit', edit_book_preference_path(@book, @book_preference), :class => 'btn btn-primary'%>
+<%= link_to t('.back', :default => t("helpers.links.back")), book_path(@book), :class => 'btn' %>

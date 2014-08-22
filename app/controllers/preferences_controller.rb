@@ -1,11 +1,10 @@
 class PreferencesController < ApplicationController
   before_action :set_book_preference, only: [:show, :edit, :update, :destroy]
+  before_action :set_book
 
   # GET /preferences/1
   # GET /preferences/1.json
   def show
-    @book_preference = OptedOut.new if @book_preference.nil?
-    respond_with(@book, @book_preference)
   end
 
   # GET /preferences/new
@@ -32,7 +31,7 @@ class PreferencesController < ApplicationController
       else
         flash[:notice] = 'Book preferences were successfully created!'
       end
-      respond_with(@book, @book_preference)
+      respond_with(@book)
     end
   end
 
@@ -45,7 +44,7 @@ class PreferencesController < ApplicationController
       else
         flash[:error] = 'Unable to update preferences. Please try after some time!'
       end
-      respond_with(@book, @book_preference)
+      respond_with(@book)
     end
   end
 
@@ -59,7 +58,7 @@ class PreferencesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_book_preference
-      @book_preference = OptedOut.find(params[:id])
+      @book_preference = OptedOut.where("book_id = ? AND user_id = ?",params[:book_id], current_user.id)[0]
     end
 
     def set_book

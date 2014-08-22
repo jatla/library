@@ -1,17 +1,25 @@
-<%= form_for(@book_preference) do |f| %>
-  <% if @book_preference.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@book_preference.errors.count, "error") %> prohibited this book_preference from being saved:</h2>
+<h4>Preferences for <%= @book.title.titleize %></h4>
+<%= form_for ([@book, @book_preference]), :url => {:controller => 'preferences', :action => action}, :html => { :class => 'form-horizontal' } do |f| %>
 
-      <ul>
-      <% @book_preference.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
+  <div class="control-group">
+    <%= f.label :opt_out_by_rating, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.check_box :by_rating, :class => 'check_box' %>
     </div>
-  <% end %>
-
-  <div class="actions">
-    <%= f.submit %>
   </div>
+  <div class="control-group">
+    <%= f.label :rating_threshold, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.select(:rating_threshold, options_for_select([["1", 1], ["2", 2], ["3", 3], ["4", 4], ["5", 5]], @book_preference.rating_threshold)) %>
+    </div>
+  </div>
+  <div class="control-group">
+    <%= f.label :opt_out_by_review, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.check_box :by_review, :class => 'check_box' %>
+    </div>
+  </div>
+  <%= f.submit 'Set Preferences', :method => 'put', :class => 'btn btn-primary' %>
+  <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
+              book_path(@book), :class => 'btn' %>
 <% end %>

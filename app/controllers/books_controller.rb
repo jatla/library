@@ -16,6 +16,7 @@ class BooksController < ApplicationController
   # GET /books/1
   # GET /books/1.json
   def show
+    @book_preferences = OptedOut.where("book_id = ? AND user_id = ?",params[:id], current_user.id)[0]
   end
 
   # GET /books/new

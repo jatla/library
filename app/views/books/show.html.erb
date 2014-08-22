@@ -19,6 +19,11 @@
         <% else %>
           <%= menu_item 'Stop Following', stop_following_book_path(@book) %>
         <% end %>
+        <% if ( @book_preferences.nil? ) %>
+          <%= menu_item 'Preferences', new_book_preference_path(@book.id) %>
+        <% else %>
+          <%= menu_item 'Preferences', book_preference_path(@book.id, @book_preferences) %>
+        <% end %>
       <% end %>
     <% end %>
   <% end %>
