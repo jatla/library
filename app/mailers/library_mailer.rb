@@ -1,6 +1,3 @@
-require 'aws/core'
-require 'aws/simple_email_service'
-
 class LibraryMailer < ActionMailer::Base
   default from: "library@viswajyothischools.org"
 

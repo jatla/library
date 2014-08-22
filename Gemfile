@@ -8,6 +8,7 @@ gem 'rails', '4.1.4'
 group :test, :development do
 	gem 'rspec-rails'
 	gem 'simplecov', :require => false
+	gem "factory_girl_rails"
 end
 
 # Used for cleaning up controller code

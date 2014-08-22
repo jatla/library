@@ -13,4 +13,8 @@ CarrierWave.configure do |config|
   config.fog_public     = false                                   # optional, defaults to true
   config.fog_attributes = {'Cache-Control'=>'max-age=315576000'}  # optional, defaults to {}
   config.fog_use_ssl_for_aws = true
+
+  if Rails.env.test?
+      config.enable_processing = false
+  end
 end

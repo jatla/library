@@ -41,4 +41,16 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = "random"
+
+  # Mock the fog storage in tests
+  Fog.mock!
+  Fog.credentials_path = Rails.root.join('config/fog_credentials.yml')
+  connection = Fog::Storage.new(:provider => 'AWS')
+  connection.directories.create(:key => 'book-images-library')
+
+  # Configure factory girl
+  config.include FactoryGirl::Syntax::Methods
+  config.before(:suite) do
+    FactoryGirl.lint
+  end
 end
