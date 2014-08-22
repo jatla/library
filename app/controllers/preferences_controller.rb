@@ -4,12 +4,14 @@ class PreferencesController < ApplicationController
   # GET /preferences/1
   # GET /preferences/1.json
   def show
+    @book_preference = OptedOut.new if @book_preference.nil?
+    respond_with(@book, @book_preference)
   end
 
   # GET /preferences/new
   def new
     if user_signed_in?
-      @book_preference = BookPreference.new
+      @book_preference = OptedOut.new
     end
   end
 
@@ -21,7 +23,7 @@ class PreferencesController < ApplicationController
   # POST /preferences.json
   def create
     if user_signed_in?
-      @book_preference = BookPreference.new(book_preference_params)
+      @book_preference = OptedOut.new(book_preference_params)
       @book_preference.user_id = current_user.id
       @book_preference.book_id = @book.id
 

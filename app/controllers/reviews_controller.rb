@@ -12,7 +12,7 @@ class ReviewsController < ApplicationController
   end
 
   def new
-    if (view_context.can_be_reviewed(@book))
+    if ( user_signed_in? && @book.is_active? && !current_user.is_blocked? )
       @review = Review.new
       session[:prev_page] = request.env['HTTP_REFERER']
       respond_with(@book, @review)
@@ -24,7 +24,7 @@ class ReviewsController < ApplicationController
   end
 
   def create
-    if (view_context.can_be_reviewed(@book))
+    if (user_signed_in? && @book.is_active? && !current_user.is_blocked?)
       @review = Review.new(review_params)
       @review.user_id = current_user.id
       @review.book_id = @book.id
