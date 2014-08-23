@@ -11,6 +11,9 @@ Library::Application.routes.draw do
   get '/books/:id/stop_following(.:format)', to: 'books#stop_following', as: :stop_following_book
 
   get "home/index"
+  get '/home/reports(.:format)', to: 'home#reports', as: :user_reports
+  get '/home/invite_user(.:format)', to: 'home#invite_user', as: :invite_user
+
   devise_for :users, controllers: { omniauth_callbacks: "users/omniauth_callbacks" }
   devise_scope :user do
     get 'sign_in', to: 'home#index', as: :new_user_session
@@ -20,7 +23,6 @@ Library::Application.routes.draw do
   get '/users', to: 'users#index', as: :users
   match '/users/:id', to: 'users#update', as: :user, via: [:get, :patch]
   get '/users/:id/edit(.:format)', to: 'users#edit', as: :edit_user
-  get '/home/reports(.:format)', to: 'home#reports', as: :user_reports
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

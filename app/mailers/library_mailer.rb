@@ -18,4 +18,9 @@ class LibraryMailer < ActionMailer::Base
     @user = User.find(follow.user_id)
     mail(:to => @user.email, :subject => "New book #{@book.title} added to your following list!")
   end
+
+  def invite_user(email, user)
+    @current_user = user
+    mail(:to => email, :cc => user.email, :subject => "You are invited to join Library")
+  end
 end

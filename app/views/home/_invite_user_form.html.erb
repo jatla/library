@@ -1,0 +1,17 @@
+<%= form_tag(invite_user_path, method: "get", options: { class: "navbar-form navbar-left"}) do %>
+	<div class="row-fluid">
+		<div class="panel panel-primary">
+		  	<div class="panel-body">
+			  	<div class="form-group">
+			  		<h4>Invite Friends!</h4>
+			  		<div class="form-control">
+			    		<%= email_field_tag(:email, "", class: "text_field") %>
+		  			</div>
+			  		<div class="form-control">
+			    		<%= submit_tag "Invite", class: "btn btn-primary" %>
+		  			</div>
+		  		</div>
+		    </div>
+		</div>
+	</div>
+<% end %>
