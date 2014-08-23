@@ -21,7 +21,11 @@
     <%= f.label :image, :class => 'control-label' %>
     <div class="controls">
       <%= f.file_field :image, :class => 'file_field' %>
-      <%= image_tag(@book.image_url(:thumb), class: "img-thumbnail") if @book.image? %>
+      <% if @book.image? %>
+        <%= image_tag(@book.image_url(:thumb), class: "img-thumbnail") %>
+      <% else %>
+        <%= image_required_message %>
+      <% end %>
     </div>
   </div>
   <div class="control-group">

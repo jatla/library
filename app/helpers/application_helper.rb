@@ -40,22 +40,27 @@ module ApplicationHelper
 		truncate(str, length: length, omission: "...")
 	end
 
+	def image_required_message
+		highlight(':image is required for the book to be approved!', ':image is required for the book to be approved!')
+	end
+
+
 	def is_tag_used?(tag)
 		(BookTag.where(tag_id: tag.id)).empty?
 	end
 
 	def bootstrap_class_for flash_type
-    case flash_type
-      when :success
-        "alert-success"
-      when :error
-        "alert-error"
-      when :alert
-        "alert-block"
-      when :notice
-        "alert-info"
-      else
-        flash_type.to_s
-    end
-  end
+	    case flash_type
+	      when :success
+	        "alert-success"
+	      when :error
+	        "alert-error"
+	      when :alert
+	        "alert-block"
+	      when :notice
+	        "alert-info"
+	      else
+	        flash_type.to_s
+	    end
+  	end
 end
