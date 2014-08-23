@@ -1,7 +1,9 @@
 <%- model_class = Review -%>
 <script>
   $(document).ready(function() {
-      $('#book-reviews').dataTable();
+      $('#book-reviews').dataTable({
+        "order": [[ 0, "desc" ]]
+    });
   } );
 </script>
 <table id="book-reviews" class="table table-striped">

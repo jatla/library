@@ -10,7 +10,9 @@
 <% end %>
 <script>
   $(document).ready(function() {
-      $('#books').dataTable();
+      $('#books').dataTable({
+        "order": [[ 4, "desc" ]]
+    });
   } );
 </script>
 <table id="books" class="table table-striped">
