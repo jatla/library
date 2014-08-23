@@ -1,3 +1,4 @@
+require 'controllers/controller_macros'
 require 'simplecov'
 SimpleCov.start 'rails'
 # This file is copied to spec/ when you run 'rails generate rspec:install'
@@ -41,6 +42,10 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = "random"
+
+  # Configure Devise helpers 
+  config.include Devise::TestHelpers, :type => :controller
+  config.extend ControllerMacros, :type => :controller
 
   # Mock the fog storage in tests
   Fog.mock!
