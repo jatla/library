@@ -18,7 +18,7 @@
     <% @book.reviews.each do |review| %>
       <tr>
         <td><%= review.rating %></td>
-        <td><%= review.description %></td>
+        <td><%= short_string_for(review.description, 30) %></td>
         <td>
           <%= link_to 'Details', book_review_path(@book, review),  :class => 'btn btn-mini' %>
           <% if ( ( is_admin? || is_owner?(review)) ) %>

@@ -24,6 +24,12 @@
       <%= image_tag(@book.image_url(:thumb), class: "img-thumbnail") if @book.image? %>
     </div>
   </div>
+  <div class="control-group">
+    <%= f.label :tags, :class => 'control-label' %>
+    <div class="controls">
+      <%= f.collection_select(:tag_ids, Tag.all, :id, :name, {selected: @book.tag_ids},{ multiple: true }) %>
+    </div>
+  </div>
   <% if @book.is_approved? %>
     <div class="control-group">
       <%= f.label :is_active, :class => 'control-label' %>

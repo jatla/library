@@ -8,6 +8,9 @@ class Book < ActiveRecord::Base
 	has_many :opted_outs
     has_many :opted_out_users, through: :opted_outs, source: "User"
 
+    has_many :book_tags
+    has_many :tags, through: :book_tags
+
 	mount_uploader :image, S3Uploader
     validates :title, :author, :isbn, presence: true
 

@@ -31,7 +31,19 @@ module ApplicationHelper
 	def can_be_reviewed?(book)
 		 user_signed_in? && book.is_active? && !current_user.is_blocked? 
 	end
-	
+
+	def tag_helper(book)
+		book.tags.collect { |t| t.name }.join(";")
+	end
+
+	def short_string_for(str, length)
+		truncate(str, length: length, omission: "...")
+	end
+
+	def is_tag_used?(tag)
+		(BookTag.where(tag_id: tag.id)).empty?
+	end
+
 	def bootstrap_class_for flash_type
     case flash_type
       when :success

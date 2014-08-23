@@ -1,6 +1,7 @@
 Library::Application.routes.draw do
 
   resources :user_configs
+  resources :tags
   resources :books do
     resources :reviews
     resources :preferences

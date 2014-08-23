@@ -1,0 +1,47 @@
+<%- model_class = Tag -%>
+<%= nav_bar :fluid => :top, :brand => model_class.model_name.human.pluralize.titleize, :responsive => true do %>
+  <%= menu_group :pull => :right do %>
+    <% if ( current_user.try(:is_admin?) ) %>
+      <%= drop_down_with_submenu "Actions" do %>
+        <%= menu_item t('.new', :default => t("helpers.links.new")), new_tag_path %>
+      <% end %>
+    <% end %>
+  <% end %>
+<% end %>
+<script>
+  $(document).ready(function() {
+      $('#tags').dataTable();
+  } );
+</script>
+<table id="tags" class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name(:name) %></th>
+      <th><%= model_class.human_attribute_name(:description) %></th>
+      <% if current_user.try(:is_admin?) %>
+        <th><%=t '.actions', :default => t("helpers.actions") %></th>
+      <% end %> 
+    </tr>
+  </thead>
+  <tbody>
+    <% @tags.each do |tag| %>
+      <tr>
+        <td><%= tag.name %></td>
+        <td><%= tag.description %></td>
+        <% if current_user.try(:is_admin?) %>
+          <td>
+            <%= link_to t('.edit', :default => t("helpers.links.edit")),
+                        edit_tag_path(tag), :class => 'btn btn-mini' %>
+            <% if (!is_tag_used?(tag)) %>
+              <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+                          tag_path(tag),
+                          :method => :delete,
+                          :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+                          :class => 'btn btn-mini btn-danger' %>
+            <% end %>
+          </td>
+        <% end %> 
+      </tr>
+    <% end %>
+  </tbody>
+</table>

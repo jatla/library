@@ -23,6 +23,7 @@
       <th><%= model_class.human_attribute_name(:author) %></th>
       <th><%= model_class.human_attribute_name(:isbn) %></th>
       <th><%= titleize_column_name(model_class.human_attribute_name(:avg_rating)) %></th>
+      <th><%= model_class.human_attribute_name(:tags) %></th>
       <% if ( user_signed_in? ) %>
         <th><%=t '.actions', :default => t("helpers.actions") %></th>
       <% end %>
@@ -36,6 +37,7 @@
         <td><%= book.author %></td>
         <td><%= book.isbn %></td>
         <td><%= book.avg_rating %></td>
+        <td><%= short_string_for(tag_helper(book), 20) %></td>
         <td>
           <% if (can_be_reviewed?(book)) %>
             <%= link_to 'Review', new_book_review_path(book.id), :class => 'btn btn-mini' %>
@@ -43,7 +45,6 @@
           <% if ( is_admin? || is_owner?(book)) %>
             <%= link_to t('.edit', :default => t("helpers.links.edit")),
                         edit_book_path(book), :class => 'btn btn-mini' %>
-
             <% if ( book.reviews.empty? ) %>
               <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
                           book_path(book),

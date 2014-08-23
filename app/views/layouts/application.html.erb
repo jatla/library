@@ -44,8 +44,8 @@
             <%= drop_down_with_submenu image_tag(current_user.avatar, class: "img-circle") do %>
               <% if current_user.try(:is_admin?) %>
                 <%= drop_down_submenu "Admin" do %>
-                  <%= menu_item "Users", users_path %>
                   <%= menu_item "Reports", user_reports_path %>
+                  <%= menu_item "Users", users_path %>
                 <% end %>
                 <%= drop_down_divider %>
               <% end %>
@@ -66,6 +66,7 @@
             <ul class="nav nav-list">
               <li><%= link_to "Home", home_index_path  %></li>
               <li><%= link_to "Books", books_path  %></li>
+              <li><%= link_to "Valid Tags", tags_path  %></li>
             </ul>
           </div>
         </div>
