@@ -23,4 +23,8 @@ class LibraryMailer < ActionMailer::Base
     @current_user = user
     mail(:to => email, :cc => user.email, :subject => "You are invited to join Library")
   end
+
+  def on_admin(user)
+    mail(:to => user.email, :subject => "You are invited to be admin for library")
+  end
 end

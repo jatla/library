@@ -23,6 +23,9 @@ class UsersController < ApplicationController
   # PATCH/PUT /users/1.json
   def update
     if current_user.try(:is_admin?)
+      if (@user.is_admin_changed? && @user.is_admin?)
+        LibraryMailer.on_admin(self).deliver
+      end
       respond_to do |format|
         if @user.update(user_params)
           format.html { redirect_to users_url, notice: 'User was successfully updated.' }
