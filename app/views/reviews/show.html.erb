@@ -8,20 +8,14 @@
   <dd><%= @review.description %></dd>
   <dt><strong><%= model_class.human_attribute_name(:rating) %>:</strong></dt>
   <dd><%= @review.rating %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:user_id) %>:</strong></dt>
-  <dd><%= @review.user_id %></dd>
-  <dt><strong><%= model_class.human_attribute_name(:book_id) %>:</strong></dt>
-  <dd><%= @review.book_id %></dd>
 </dl>
 
-<div class="form-actions">
-  <%= link_to t('.back', :default => t("helpers.links.back")),
-              book_path(@book), :class => 'btn'  %>
-  <%= link_to t('.edit', :default => t("helpers.links.edit")),
-              edit_book_review_path(@book, @review), :class => 'btn' %>
-  <%= link_to t('.destroy', :default => t("helpers.links.destroy")),
-              book_review_path(@book, @review),
-              :method => 'delete',
-              :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
-              :class => 'btn btn-danger' %>
-</div>
+<%= link_to t('.back', :default => t("helpers.links.back")),
+            book_path(@book), :class => 'btn'  %>
+<%= link_to t('.edit', :default => t("helpers.links.edit")),
+            edit_book_review_path(@book, @review), :class => 'btn' %>
+<%= link_to t('.destroy', :default => t("helpers.links.destroy")),
+            book_review_path(@book, @review),
+            :method => 'delete',
+            :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) },
+            :class => 'btn btn-danger' %>

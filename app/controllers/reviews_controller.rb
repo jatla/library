@@ -14,13 +14,11 @@ class ReviewsController < ApplicationController
   def new
     if ( user_signed_in? && @book.is_active? && !current_user.is_blocked? )
       @review = Review.new
-      session[:prev_page] = request.env['HTTP_REFERER']
       respond_with(@book, @review)
     end
   end
 
   def edit
-    session[:prev_page] = request.env['HTTP_REFERER']
   end
 
   def create
