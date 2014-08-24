@@ -14,7 +14,11 @@ CarrierWave.configure do |config|
   config.fog_attributes = {'Cache-Control'=>'max-age=315576000'}  # optional, defaults to {}
   config.fog_use_ssl_for_aws = true
 
+  # Choose what kind of storage to use for this uploader:
   if Rails.env.test?
-      config.enable_processing = false
+    config.storage = :file
+    config.enable_processing = false
+  else
+    config.storage :fog
   end
 end

@@ -6,19 +6,42 @@ describe S3Uploader do
 
   before do
     S3Uploader.enable_processing = true
-    @uploader = S3Uploader.new(@user, :avatar)
-    path_to_file = "app/assets/images/logo.jpg"
-    @uploader.store!(File.open(path_to_file))
+    @user = create(:user)
+    @user.save!
   end
 
   after do
     S3Uploader.enable_processing = false
-    @uploader.remove!
   end
 
-  context 'the thumb version' do
-    it "should scale down a landscape image to be exactly 50 by 50 pixels" do
-      @uploader.thumb.should have_dimensions(50, 50)
+  context 'the image sizes' do
+    it "should scale down a landscape image to be exactly 50 by 31 pixels" do
+      @book = create(:approved_active_book)
+      @book.user_id = @user.id
+      @book.save!
+      @book.image.thumb.should have_dimensions(50, 31)
+    end
+    it "should save image with full resolution" do
+      @book = create(:approved_active_book)
+      @book.user_id = @user.id
+      @book.save!
+      @book.image.should have_dimensions(1920, 1200)
+    end
+  end
+  context 'default url' do
+    it "should return default url if no image is attached" do
+      @book = create(:un_approved_book)
+      @book.user_id = @user.id
+      @book.save!
+      @book.image_url.should eq('default.jpg')
+    end
+  end
+  context 'unsupported types' do
+    it "should throw exception when unsupported types are being uploaded" do
+      @book = create(:un_approved_book)
+      @book.user_id = @user.id
+      @book.image = File.open(File.join(Rails.root, '/app/assets/images/default.pdf'))
+      expect { @book.save! }.to raise_error(ActiveRecord::RecordInvalid, "Validation failed: Image You are not allowed to upload \"pdf\" files, allowed types: jpg, jpeg, gif, png")
     end
   end
 end

@@ -32,7 +32,7 @@
   <tbody>
     <% @books.each do |book| %>
       <tr>
-        <td><%= link_to(image_tag(book.image_url(:thumb), class: "img-thumbnail"), book_path(book)) %></td>
+        <td><%= link_to(image_tag(book.image_url(:thumb), class: "img img-thumbnail"), book_path(book)) %></td>
         <td><%= book.title %></td>
         <td><%= book.author %></td>
         <td><%= book.isbn %></td>

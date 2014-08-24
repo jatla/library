@@ -4,7 +4,7 @@ html/**
 
 config/application.yml
 config/fog_credentials.yml
-
+public/uploads/*
 log/*
 
 db/*.sqlite3

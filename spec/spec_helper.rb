@@ -1,4 +1,3 @@
-require 'controllers/controller_macros'
 require 'simplecov'
 SimpleCov.start 'rails'
 # This file is copied to spec/ when you run 'rails generate rspec:install'
@@ -46,12 +45,6 @@ RSpec.configure do |config|
   # Configure Devise helpers 
   config.include Devise::TestHelpers, :type => :controller
   config.extend ControllerMacros, :type => :controller
-
-  # Mock the fog storage in tests
-  Fog.mock!
-  Fog.credentials_path = Rails.root.join('config/fog_credentials.yml')
-  connection = Fog::Storage.new(:provider => 'AWS')
-  connection.directories.create(:key => 'book-images-library')
 
   # Configure factory girl
   config.include FactoryGirl::Syntax::Methods
