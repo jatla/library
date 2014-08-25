@@ -11,14 +11,6 @@ class UsersController < ApplicationController
   def edit
   end
 
-  # POST /users
-  # POST /users.json
-  def create
-    @user = User.new(user_params)
-    @user.save
-    respond_with(@user, :flash => true)
-  end
-
   # PATCH/PUT /users/1
   # PATCH/PUT /users/1.json
   def update
@@ -36,12 +28,6 @@ class UsersController < ApplicationController
         end
       end
     end
-  end
-
-  # DELETE /users/1
-  # DELETE /users/1.json
-  def destroy
-
   end
 
   private
