@@ -20,141 +20,246 @@ require 'spec_helper'
 
 describe BooksController do
 
-  # This should return the minimal set of attributes required to create a valid
-  # Book. As you add validations to Book, be sure to
-  # adjust the attributes here as well.
-  let(:valid_attributes) { { "title" => "MyString" } }
-
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
   # BooksController. Be sure to keep this updated too.
+  let(:valid_attributes) { { title: "New Book", author: "Rspec Test", isbn: "RSPECTEST" } }
+  let(:in_valid_attributes) { { title: "New Book", author: "Rspec Test" } }
   let(:valid_session) { {} }
 
-  describe "GET index" do
-    it "assigns all books as @books" do
-      book = Book.create! valid_attributes
-      get :index, {}, valid_session
-      assigns(:books).should eq([book])
-    end
+  before do
+    OmniAuth.config.test_mode = true
+    request.env["omniauth.auth"] = OmniAuth.config.mock_auth[:google_oauth2] 
+    @approved_book = create(:approved_active_book)
+    @approved_book.save!
+    @inactive_book = create(:approved_in_active_book)
+    @inactive_book.save!
+    @un_approved_book1 = create(:un_approved_book, :id => 98)
+    @un_approved_book1.save!
+    @un_approved_book2 = create(:un_approved_book, :id => 99)
+    @un_approved_book2.save!
+    @user1 = create(:user)
+    @user1.save!
+    @user2 = create(:user)
+    @user2.save!
+  end
+
+  after do
+    OmniAuth.config.test_mode = false
   end
 
   describe "GET show" do
     it "assigns the requested book as @book" do
-      book = Book.create! valid_attributes
-      get :show, {:id => book.to_param}, valid_session
-      assigns(:book).should eq(book)
+      get :show, {:id => @approved_book.to_param}, valid_session
+      assigns(:book).should eq(@approved_book)
+    end
+  end
+  context "if user is not signed in" do
+    describe "GET index" do
+      it "assigns only approved books as @books" do
+        get :index, {}, valid_session
+        assigns(:books).should eq([@approved_book, @inactive_book])
+      end
+    end
+    describe "GET new" do
+      it "should redirect to home page with sign in help message " do
+        get :new, {}, valid_session
+        response.should redirect_to(new_user_session_url)
+      end
+    end
+    describe "GET edit" do
+      it "should redirect to home page with sign in help message " do
+        get :edit, {:id => @un_approved_book1.to_param}, valid_session
+        response.should redirect_to(new_user_session_url)
+      end
+    end
+    describe "POST create" do
+      it "should redirect to home page with sign in help message " do
+        post :create, {:book => valid_attributes}, valid_session
+        response.should redirect_to(new_user_session_url)
+      end
+    end
+    describe "POST update" do
+      it "should redirect to home page with sign in help message " do
+        put :update, {:id => @un_approved_book1.to_param, :book => { author: "RSpec Test" }}, valid_session
+        response.should redirect_to(new_user_session_url)
+      end
+    end
+    describe "GET follow" do
+      it "should redirect to home page with sign in help message " do
+        get :follow, {:id => @un_approved_book1.to_param}, valid_session
+        response.should redirect_to(new_user_session_url)
+      end
+    end
+    describe "GET stop_following" do
+      it "should redirect to home page with sign in help message " do
+        get :stop_following, {:id => @un_approved_book1.to_param}, valid_session
+        response.should redirect_to(new_user_session_url)
+      end
     end
   end
 
-  describe "GET new" do
-    it "assigns a new book as @book" do
-      get :new, {}, valid_session
-      assigns(:book).should be_a_new(Book)
+  context "if admin is signed in" do
+    before do
+      request.env["devise.mapping"] = Devise.mappings[:admin]
+      OmniAuth.config.add_mock(:google_oauth2, {:uid => '67890'})
+      @admin = create(:admin)
+      sign_in @admin
     end
-  end
-
-  describe "GET edit" do
-    it "assigns the requested book as @book" do
-      book = Book.create! valid_attributes
-      get :edit, {:id => book.to_param}, valid_session
-      assigns(:book).should eq(book)
+    describe "GET index" do
+      it "assigns all books as @books" do
+        get :index, {}, valid_session
+        assigns(:books).should eq([@approved_book, @inactive_book, @un_approved_book1, @un_approved_book2])
+      end
     end
-  end
-
-  describe "POST create" do
-    describe "with valid params" do
-      it "creates a new Book" do
+    describe "GET edit" do
+      it "assigns the requested book as @book even if admin is not the owner" do
+        @un_approved_book2.user_id = @user1.id
+        @un_approved_book2.save!
+        get :edit, {:id => @un_approved_book2.to_param}, valid_session
+        assigns(:book).should eq(@un_approved_book2)
+      end
+    end
+    describe "PUT update" do
+      describe "with valid params" do
+        it "updates the requested book even if he is not the owner" do
+          @un_approved_book1.user_id = @user1.id
+          @un_approved_book1.save!
+          put :update, {:id => @un_approved_book1.to_param, :book => valid_attributes}, valid_session
+          assigns(:book).should eq(@un_approved_book1)
+        end
+      end
+    end
+    describe "DELETE destroy" do
+      it "destroys the requested book even if admin is not the owner the owner" do
+        @un_approved_book1.user_id = @user1.id
+        @un_approved_book1.save!
         expect {
-          post :create, {:book => valid_attributes}, valid_session
-        }.to change(Book, :count).by(1)
-      end
-
-      it "assigns a newly created book as @book" do
-        post :create, {:book => valid_attributes}, valid_session
-        assigns(:book).should be_a(Book)
-        assigns(:book).should be_persisted
-      end
-
-      it "redirects to the created book" do
-        post :create, {:book => valid_attributes}, valid_session
-        response.should redirect_to(Book.last)
+          delete :destroy, {:id => @un_approved_book1.to_param}, valid_session
+        }.to change(Book, :count).by(-1)
       end
     end
+  end
 
-    describe "with invalid params" do
-      it "assigns a newly created but unsaved book as @book" do
-        # Trigger the behavior that occurs when invalid params are submitted
-        Book.any_instance.stub(:save).and_return(false)
-        post :create, {:book => { "title" => "invalid value" }}, valid_session
+  context "if user is signed in" do
+    before do
+      request.env["devise.mapping"] = Devise.mappings[:user]
+      OmniAuth.config.add_mock(:google_oauth2, {:uid => '12345'})
+      @user = create(:user, :id => 99)
+      @user.save!
+      sign_in @user
+      @un_approved_book1.user_id = @user.id
+      @un_approved_book1.save!
+    end
+    describe "GET index" do
+      it "assigns only approved books and books this user is owner of as @books" do
+        get :index, {}, valid_session
+        assigns(:books).should eq([@approved_book, @inactive_book, @un_approved_book1])
+        @un_approved_book1.user_id = @user1.id
+        @un_approved_book1.save!
+        get :index, {}, valid_session
+        assigns(:books).should eq([@approved_book, @inactive_book])
+      end
+    end
+    describe "GET new" do
+      it "assigns a new book as @book" do
+        get :new, {}, valid_session
         assigns(:book).should be_a_new(Book)
       end
-
-      it "re-renders the 'new' template" do
-        # Trigger the behavior that occurs when invalid params are submitted
-        Book.any_instance.stub(:save).and_return(false)
-        post :create, {:book => { "title" => "invalid value" }}, valid_session
-        response.should render_template("new")
+    end
+    describe "GET edit" do
+      before do
+        @un_approved_book1.user_id = @user1.id
+        @un_approved_book1.save!
+      end
+      it "assigns the requested book as @book only if user is the owner" do
+        get :edit, {:id => @un_approved_book1.to_param}, valid_session
+        assigns(:book).should eq([])
+        response.should redirect_to(root_url)
+      end
+    end
+    describe "POST create" do
+      describe "with valid params" do
+        it "creates a new Book" do
+          expect {
+            post :create, {:book => valid_attributes}, valid_session
+          }.to change(Book, :count).by(1)
+        end
+        it "assigns a newly created book as @book" do
+          post :create, {:book => valid_attributes}, valid_session
+          assigns(:book).should be_a(Book)
+          assigns(:book).should be_persisted
+        end
+        it "redirects to the created book" do
+          post :create, {:book => valid_attributes}, valid_session
+          response.should redirect_to(Book.last)
+        end
+      end
+      describe "with invalid params" do
+        it "assigns a newly created but unsaved book as @book" do
+          post :create, {:book => in_valid_attributes}, valid_session
+          assigns(:book).should be_a_new(Book)
+        end
+        it "re-renders the 'new' template" do
+          post :create, {:book => in_valid_attributes}, valid_session
+          response.should render_template("new")
+        end
+      end
+    end
+    describe "PUT update" do
+      describe "with valid params" do
+        it "updates the requested book only if current user is the owner" do
+          put :update, {:id => @un_approved_book1.to_param, :book => valid_attributes}, valid_session
+          assigns(:book).should eq(@un_approved_book1)
+          puts @un_approved_book1.author
+        end
+        it "assigns the requested book as @book" do
+          put :update, {:id => @un_approved_book1.to_param, :book => valid_attributes}, valid_session
+          assigns(:book).should eq(@un_approved_book1)
+        end
+        it "redirects to the book" do
+          put :update, {:id => @un_approved_book1.to_param, :book => valid_attributes}, valid_session
+          response.should redirect_to(@un_approved_book1)
+        end
+      end
+      describe "with invalid params" do
+        it "assigns the book as @book" do
+          put :update, {:id => @un_approved_book1.to_param, :book => { "isbn" => nil }}, valid_session
+          assigns(:book).should eq(@un_approved_book1)
+          @un_approved_book1.isbn.should eq("FG03")
+        end
+        it "re-renders the 'edit' template" do
+          put :update, {:id => @un_approved_book1.to_param, :book => { "isbn" => nil }}, valid_session
+          response.should render_template("edit")
+        end
+      end
+    end
+    describe "DELETE destroy" do
+      it "destroys the requested book only if user is the owner" do
+        expect {
+          delete :destroy, {:id => @un_approved_book1.to_param}, valid_session
+        }.to change(Book, :count).by(-1)
+      end
+      it "if user is not owner, redirect to root url" do
+        expect {
+          delete :destroy, {:id => @approved_book.to_param}, valid_session
+        }.to change(Book, :count).by(0)
+        response.should redirect_to(root_url)
+      end
+    end
+    describe "GET follow" do
+      it "should redirect to book page with success message " do
+        get :follow, {:id => @un_approved_book1.to_param}, valid_session
+        @user.followed_books.should include(@un_approved_book1)
+        response.should render_template("show")
+      end
+    end
+    describe "GET stop_following" do
+      it "should redirect to book page with success message " do
+        get :stop_following, {:id => @un_approved_book1.to_param}, valid_session
+        @user.followed_books.should_not include(@un_approved_book1)
+        response.should render_template("show")
       end
     end
   end
-
-  describe "PUT update" do
-    describe "with valid params" do
-      it "updates the requested book" do
-        book = Book.create! valid_attributes
-        # Assuming there are no other books in the database, this
-        # specifies that the Book created on the previous line
-        # receives the :update_attributes message with whatever params are
-        # submitted in the request.
-        Book.any_instance.should_receive(:update).with({ "title" => "MyString" })
-        put :update, {:id => book.to_param, :book => { "title" => "MyString" }}, valid_session
-      end
-
-      it "assigns the requested book as @book" do
-        book = Book.create! valid_attributes
-        put :update, {:id => book.to_param, :book => valid_attributes}, valid_session
-        assigns(:book).should eq(book)
-      end
-
-      it "redirects to the book" do
-        book = Book.create! valid_attributes
-        put :update, {:id => book.to_param, :book => valid_attributes}, valid_session
-        response.should redirect_to(book)
-      end
-    end
-
-    describe "with invalid params" do
-      it "assigns the book as @book" do
-        book = Book.create! valid_attributes
-        # Trigger the behavior that occurs when invalid params are submitted
-        Book.any_instance.stub(:save).and_return(false)
-        put :update, {:id => book.to_param, :book => { "title" => "invalid value" }}, valid_session
-        assigns(:book).should eq(book)
-      end
-
-      it "re-renders the 'edit' template" do
-        book = Book.create! valid_attributes
-        # Trigger the behavior that occurs when invalid params are submitted
-        Book.any_instance.stub(:save).and_return(false)
-        put :update, {:id => book.to_param, :book => { "title" => "invalid value" }}, valid_session
-        response.should render_template("edit")
-      end
-    end
-  end
-
-  describe "DELETE destroy" do
-    it "destroys the requested book" do
-      book = Book.create! valid_attributes
-      expect {
-        delete :destroy, {:id => book.to_param}, valid_session
-      }.to change(Book, :count).by(-1)
-    end
-
-    it "redirects to the books list" do
-      book = Book.create! valid_attributes
-      delete :destroy, {:id => book.to_param}, valid_session
-      response.should redirect_to(books_url)
-    end
-  end
-
 end

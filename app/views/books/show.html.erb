@@ -1,28 +1,30 @@
 <%- model_class = Book -%>
 <%= nav_bar :fluid => :top, :brand => @book.title.titleize, :responsive => true do %>
   <%= menu_group :pull => :right do %>
-    <%= drop_down_with_submenu "Actions" do %>
-      <% if ( ( is_admin? || is_owner?(@book)) ) %>
-        <%= menu_item t('.edit', :default => t("helpers.links.edit")), edit_book_path(@book) %>
-        <% if ( @book.reviews.empty? ) %>
-          <%= menu_item t('.destroy', :default => t("helpers.links.destroy")), book_path(@book),
-                    :method => 'delete',
-                    :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) } %>
+    <% if ( user_signed_in? ) %>
+      <%= drop_down_with_submenu "Actions" do %>
+        <% if ( ( is_admin? || is_owner?(@book)) ) %>
+          <%= menu_item t('.edit', :default => t("helpers.links.edit")), edit_book_path(@book) %>
+          <% if ( @book.reviews.empty? ) %>
+            <%= menu_item t('.destroy', :default => t("helpers.links.destroy")), book_path(@book),
+                      :method => 'delete',
+                      :data => { :confirm => t('.confirm', :default => t("helpers.links.confirm", :default => 'Are you sure?')) } %>
+          <% end %>
+          <%= drop_down_divider %>
         <% end %>
-        <%= drop_down_divider %>
-      <% end %>
-      <% if ( can_be_reviewed?(@book) ) %>
-        <%= menu_item 'Add Review', new_book_review_path(@book.id) %>
-        <%= drop_down_divider %>
-        <% if ( !is_followed?(@book.id) ) %>
-          <%= menu_item 'Follow', follow_book_path(@book) %>
-        <% else %>
-          <%= menu_item 'Stop Following', stop_following_book_path(@book) %>
-        <% end %>
-        <% if ( @book_preferences.nil? ) %>
-          <%= menu_item 'Preferences', new_book_preference_path(@book.id) %>
-        <% else %>
-          <%= menu_item 'Preferences', book_preference_path(@book.id, @book_preferences) %>
+        <% if ( can_be_reviewed?(@book) ) %>
+          <%= menu_item 'Add Review', new_book_review_path(@book.id) %>
+          <%= drop_down_divider %>
+          <% if ( @is_followed_by_cuurent_user ) %>
+            <%= menu_item 'Follow', follow_book_path(@book) %>
+          <% else %>
+            <%= menu_item 'Stop Following', stop_following_book_path(@book) %>
+          <% end %>
+          <% if ( @book_preferences.nil? ) %>
+            <%= menu_item 'Preferences', new_book_preference_path(@book.id) %>
+          <% else %>
+            <%= menu_item 'Preferences', book_preference_path(@book.id, @book_preferences) %>
+          <% end %>
         <% end %>
       <% end %>
     <% end %>

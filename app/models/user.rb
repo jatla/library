@@ -4,14 +4,13 @@ class User < ActiveRecord::Base
   has_many :reviews
 
   has_many :follows
-  has_many :followed_books, through: :follows, source: "Book"
+  has_many :followed_books, through: :follows, source: :book
 
   has_many :opted_outs
-  has_many :opted_out_books, through: :opted_outs, source: "Book"
+  has_many :opted_out_books, through: :opted_outs, source: :book
 
   def self.from_omniauth(auth)
     where(auth.slice(:provider, :uid)).first_or_create do |user|
-
       user.email = auth.info.email
       user.name = auth.info.name
       user.avatar = auth.info.image

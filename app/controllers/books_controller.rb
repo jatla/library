@@ -1,5 +1,7 @@
 class BooksController < ApplicationController
-  before_action :set_book, only: [:show, :edit, :update, :destroy, :follow, :stop_following]
+  before_action :set_book, only: [:show, :follow, :stop_following]
+  before_action :authenticate_user!, only: [:new, :edit, :create, :update, :destroy, :follow, :stop_following]
+  load_and_authorize_resource :only => [:edit, :update, :destroy]
 
   # GET /books
   # GET /books.json
@@ -16,14 +18,15 @@ class BooksController < ApplicationController
   # GET /books/1
   # GET /books/1.json
   def show
-    @book_preferences = OptedOut.where("book_id = ? AND user_id = ?",params[:id], current_user.id)[0]
+    if user_signed_in?
+      @book_preferences = OptedOut.where("book_id = ? AND user_id = ?",params[:id], current_user.id)[0]
+      @is_followed_by_cuurent_user = (Follow.where(book_id: @book.id).pluck(:user_id)).include?(current_user.id)
+    end
   end
 
   # GET /books/new
   def new
-    if user_signed_in?
       @book = Book.new
-    end
   end
 
   # GET /books/1/edit
@@ -33,34 +36,27 @@ class BooksController < ApplicationController
   # POST /books
   # POST /books.json
   def create
-    if user_signed_in?
       @book = Book.new(book_params)
       @book.user_id = current_user.id
       @book.save
       respond_with(@book, :flash => true)
-    end
   end
 
   # PATCH/PUT /books/1
   # PATCH/PUT /books/1.json
   def update
-    if ( view_context.is_admin? || view_context.is_owner?(@book))
       @book.update(book_params)
       respond_with(@book, :flash => true)
-    end
   end
 
   # DELETE /books/1
   # DELETE /books/1.json
   def destroy
-    if ( view_context.is_admin? || view_context.is_owner?(@book) )
       @book.destroy
       respond_with(@book, :flash => true)
-    end
   end
 
   def follow
-    if user_signed_in?
       @follow = Follow.new
       @follow.user_id = current_user.id
       @follow.book_id = @book.id
@@ -71,12 +67,10 @@ class BooksController < ApplicationController
                               You would receive review/rating mails, if enabled in preferences."
         LibraryMailer.on_follow(@follow).deliver
       end
-    end
     render 'show'
   end
 
   def stop_following
-    if user_signed_in?
       count = Follow.delete_all(["book_id = ? AND user_id = ?", @book.id, current_user.id])
       if !count
         flash[:error] = "Unable to process your request. Please try after some time."
@@ -84,7 +78,6 @@ class BooksController < ApplicationController
         flash[:notice] = "You had stopped following this book successfully."
       end
       render 'show'
-    end
   end
 
   private

@@ -76,15 +76,12 @@ describe UsersController do
 
     describe "with invalid params" do
       it "assigns the user as @user" do
-        put :update, {:id => @user.to_param, :user => { "name" => "invalid param" }}, valid_session
+        put :update, {:id => @user.to_param, :user => { "email" => nil }}, valid_session
         assigns(:user).should eq(@user)
-        @user.name.should eq("user")
       end
 
       it "re-renders the 'edit' template" do
-        # Trigger the behavior that occurs when invalid params are submitted
-        User.any_instance.stub(:save).and_return(false)
-        put :update, {:id => @user.to_param, :user => { "name" => "invalid param" }}, valid_session
+        put :update, {:id => @user.to_param, :user => { "email" => nil }}, valid_session
         response.should render_template("edit")
       end
     end

@@ -9,6 +9,7 @@ group :test, :development do
 	gem 'rspec-rails'
 	gem 'simplecov', :require => false
 	gem "factory_girl_rails"
+	gem "faker"
 end
 
 # Used for cleaning up controller code
@@ -18,6 +19,7 @@ gem 'responders'
 gem "omniauth-google-oauth2"
 gem 'devise'
 gem 'figaro'
+gem "cancan"
 
 # Use the following plugin for star rating
 gem 'jquery-star-rating-rails'

@@ -38,26 +38,28 @@
   </head>
   <body>
     <div class="container-fluid">
-      <%= nav_bar :fluid => :top, :brand => "the Library", :responsive => true do %>
-        <%= menu_group :pull => :right do %>
-          <% if user_signed_in? %>
-            <%= drop_down_with_submenu image_tag(current_user.avatar, class: "img-circle") do %>
-              <% if current_user.try(:is_admin?) %>
-                <%= drop_down_submenu "Admin" do %>
-                  <%= menu_item "Reports", user_reports_path %>
-                  <%= menu_item "Users", users_path %>
+      <div class="row-fluid">
+        <%= nav_bar :fluid => :top, :brand => "the Library", :responsive => true do %>
+          <%= menu_group :pull => :right do %>
+            <% if user_signed_in? %>
+              <%= drop_down_with_submenu image_tag(current_user.avatar, class: "img-circle") do %>
+                <% if current_user.try(:is_admin?) %>
+                  <%= drop_down_submenu "Admin" do %>
+                    <%= menu_item "Reports", user_reports_path %>
+                    <%= menu_item "Users", users_path %>
+                  <% end %>
+                  <%= drop_down_divider %>
                 <% end %>
+                <%= menu_item "Preferences", user_config_path(current_user.id) %>
                 <%= drop_down_divider %>
+                <%= menu_item "Sign out", destroy_user_session_path %>
               <% end %>
-              <%= menu_item "Preferences", user_config_path(current_user.id) %>
-              <%= drop_down_divider %>
-              <%= menu_item "Sign out", destroy_user_session_path %>
+            <% else %>
+              <%= menu_item "Sign in with Google", user_omniauth_authorize_path(:provider => "google_oauth2") %>
             <% end %>
-          <% else %>
-            <%= menu_item "Sign in with Google", user_omniauth_authorize_path(:provider => "google_oauth2") %>
           <% end %>
         <% end %>
-      <% end %>
+      </div>
     </div>
     <div class="container-fluid">
       <div class="row-fluid">
@@ -79,18 +81,20 @@
       </div>
     </div>
     <div class="container-fluid">
-      <footer>
-        <%= nav_bar :fixed => :bottom, :responsive => true do %>
-          <%= menu_group do %>
-            <%= menu_item "Home", home_index_path %>
-            <%= menu_divider %>
-            <% if current_user %>
-              <%= menu_item "Sign out", destroy_user_session_path %>
+      <div class="row-fluid">
+        <footer>
+          <%= nav_bar :fixed => :bottom, :responsive => true do %>
+            <%= menu_group do %>
+              <%= menu_item "Home", home_index_path %>
+              <%= menu_divider %>
+              <% if current_user %>
+                <%= menu_item "Sign out", destroy_user_session_path %>
+              <% end %>
             <% end %>
+              <%= menu_text "(c) ViswaJyothi Schools 2014", :pull => :right %>
           <% end %>
-            <%= menu_text "(c) ViswaJyothi Schools 2014", :pull => :right %>
-        <% end %>
-      </footer>
+        </footer>
+      </div>
     </div>
 
   </body>

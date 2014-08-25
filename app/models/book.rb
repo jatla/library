@@ -3,10 +3,10 @@ class Book < ActiveRecord::Base
 	has_many :reviews
 	
 	has_many :follows
-    has_many :followers, through: :follows, source: "User"
+    has_many :followers, through: :follows, source: :user
 
 	has_many :opted_outs
-    has_many :opted_out_users, through: :opted_outs, source: "User"
+    has_many :opted_out_users, through: :opted_outs, source: :user
 
     has_many :book_tags
     has_many :tags, through: :book_tags
