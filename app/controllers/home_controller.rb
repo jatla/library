@@ -1,4 +1,5 @@
 class HomeController < ApplicationController
+  before_action :authenticate_user!, only: :invite_user
   def index
   	if !user_signed_in?
   		flash[:notice] = "Please sign in with your Google account to access all features of this website!"
@@ -6,9 +7,7 @@ class HomeController < ApplicationController
   end
 
   def invite_user
-  	if user_signed_in?
-  		LibraryMailer.invite_user(params[:email], User.find(current_user.id)).deliver
-  	end
+    LibraryMailer.invite_user(params[:email], User.find(current_user.id)).deliver
   	render 'index'
   end
 
