@@ -1,6 +1,6 @@
 FactoryGirl.define do
 	factory :review do
-	    rating 2
+	    rating 3
 	    description  "Review by Factory Girl"
 	  end
 end

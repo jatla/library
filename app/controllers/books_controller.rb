@@ -20,7 +20,7 @@ class BooksController < ApplicationController
   def show
     if user_signed_in?
       @book_preferences = OptedOut.where("book_id = ? AND user_id = ?",params[:id], current_user.id)[0]
-      @is_followed_by_cuurent_user = (Follow.where(book_id: @book.id).pluck(:user_id)).include?(current_user.id)
+      @is_followed_by_cuurent_user = Follow.find_by_book_id_and_user_id(@book.id, current_user.id).nil?
     end
   end
 
@@ -67,7 +67,7 @@ class BooksController < ApplicationController
                               You would receive review/rating mails, if enabled in preferences."
         LibraryMailer.on_follow(@follow).deliver
       end
-    render 'show'
+      redirect_to book_path
   end
 
   def stop_following
@@ -77,7 +77,7 @@ class BooksController < ApplicationController
       else
         flash[:notice] = "You had stopped following this book successfully."
       end
-      render 'show'
+      redirect_to book_path
   end
 
   private

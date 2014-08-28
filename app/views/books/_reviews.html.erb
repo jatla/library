@@ -21,7 +21,7 @@
         <td><%= short_string_for(review.description, 30) %></td>
         <td>
           <%= link_to 'Details', book_review_path(@book, review),  :class => 'btn btn-mini' %>
-          <% if ( ( is_admin? || is_owner?(review)) ) %>
+          <% if can? :eud, review %>
             <%= link_to t('.edit', :default => t("helpers.links.edit")),
                         edit_book_review_path(@book, review), :class => 'btn btn-mini' %>
             <%= link_to t('.destroy', :default => t("helpers.links.destroy")),

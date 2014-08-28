@@ -9,6 +9,8 @@ class User < ActiveRecord::Base
   has_many :opted_outs
   has_many :opted_out_books, through: :opted_outs, source: :book
 
+  has_one :user_config
+
   def self.from_omniauth(auth)
     where(auth.slice(:provider, :uid)).first_or_create do |user|
       user.email = auth.info.email

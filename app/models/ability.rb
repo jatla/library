@@ -12,7 +12,7 @@ class Ability
     end
 
     can [:show, :edit, :update], UserConfig, :user_id => user.id
-    can :eud, Book, :user_id => user.id
+    can :eud, [Book, Review], :user_id => user.id
     can :eud, OptedOut, :user_id => user.id
     can [:eud, :create], Tag if user.is_admin?
 

@@ -1,20 +1,22 @@
 class ReviewsController < ApplicationController
-  before_action :set_review, only: [:show, :edit, :update, :destroy]
+  before_action :authenticate_user!, :except => [:index, :show]
+  before_action :set_review, only: :show
   before_action :set_book
+  load_and_authorize_resource :only => [:edit, :update, :destroy]
 
   def index
     @reviews = @book.reviews
-    respond_with(@book, @review)
+    respond_with(@book, @review, :flash => true)
   end
 
   def show
-    respond_with(@book, @review)
+    respond_with(@book, @review, :flash => true)
   end
 
   def new
-    if ( user_signed_in? && @book.is_active? && !current_user.is_blocked? )
+    if (@book.is_active? && !current_user.is_blocked? )
       @review = Review.new
-      respond_with(@book, @review)
+      respond_with(@book, @review, :flash => true)
     end
   end
 
@@ -22,7 +24,7 @@ class ReviewsController < ApplicationController
   end
 
   def create
-    if (user_signed_in? && @book.is_active? && !current_user.is_blocked?)
+    if (@book.is_active? && !current_user.is_blocked?)
       @review = Review.new(review_params)
       @review.user_id = current_user.id
       @review.book_id = @book.id
@@ -31,7 +33,7 @@ class ReviewsController < ApplicationController
       else
         LibraryMailer.on_new_review(@review).deliver
       end
-      respond_with(@book)
+      respond_with(@book, :flash => true)
     end
   end
 
@@ -42,7 +44,7 @@ class ReviewsController < ApplicationController
 
   def destroy
     @review.destroy
-    redirect_to(:back)
+    redirect_to(@book)
   end
 
   private

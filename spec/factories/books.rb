@@ -27,6 +27,7 @@ FactoryGirl.define do
 	    is_approved false
 	    avg_rating  0
 	  end
+
 	sequence :isbn do |n|
     	"RSPECISBn#{n}"
   	end

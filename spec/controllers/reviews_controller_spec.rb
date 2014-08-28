@@ -23,138 +23,147 @@ describe ReviewsController do
   # This should return the minimal set of attributes required to create a valid
   # Review. As you add validations to Review, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) { { "description" => "MyString" } }
+  let(:valid_attributes) { { "rating" => 3, "description" => "MyString" } }
+  let(:in_valid_attributes) { { "inavlid" => "attribute" } }
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
   # ReviewsController. Be sure to keep this updated too.
   let(:valid_session) { {} }
 
-  describe "GET index" do
-    it "assigns all reviews as @reviews" do
-      review = Review.create! valid_attributes
-      get :index, {}, valid_session
-      assigns(:reviews).should eq([review])
-    end
+  before do
+    OmniAuth.config.test_mode = true
+    request.env["omniauth.auth"] = OmniAuth.config.mock_auth[:google_oauth2] 
+    @approved_book = create(:approved_active_book)
+    @approved_book.save!
+    @inactive_book = create(:approved_in_active_book)
+    @inactive_book.save!
+    @un_approved_book1 = create(:un_approved_book, :id => 98)
+    @un_approved_book1.save!
+    @un_approved_book2 = create(:un_approved_book, :id => 99)
+    @un_approved_book2.save!
+    @user1 = create(:user)
+    @user1.save!
+    @user2 = create(:user)
+    @user2.save!
+    @review = create(:review, :id => 1)
+    @review.book_id = @approved_book.id
+    @review.save!
   end
 
-  describe "GET show" do
-    it "assigns the requested review as @review" do
-      review = Review.create! valid_attributes
-      get :show, {:id => review.to_param}, valid_session
-      assigns(:review).should eq(review)
-    end
+  after do
+    OmniAuth.config.test_mode = false
   end
 
-  describe "GET new" do
-    it "assigns a new review as @review" do
-      get :new, {}, valid_session
-      assigns(:review).should be_a_new(Review)
-    end
-  end
-
-  describe "GET edit" do
-    it "assigns the requested review as @review" do
-      review = Review.create! valid_attributes
-      get :edit, {:id => review.to_param}, valid_session
-      assigns(:review).should eq(review)
-    end
-  end
-
-  describe "POST create" do
-    describe "with valid params" do
-      it "creates a new Review" do
-        expect {
-          post :create, {:review => valid_attributes}, valid_session
-        }.to change(Review, :count).by(1)
-      end
-
-      it "assigns a newly created review as @review" do
-        post :create, {:review => valid_attributes}, valid_session
-        assigns(:review).should be_a(Review)
-        assigns(:review).should be_persisted
-      end
-
-      it "redirects to the created review" do
-        post :create, {:review => valid_attributes}, valid_session
-        response.should redirect_to(Review.last)
+  context "if user is not signed in" do
+    describe "GET index" do
+      it "assigns all reviews as @reviews" do
+        get :index, {:book_id => @approved_book.id}, valid_session
+        assigns(:reviews).should eq([@review])
       end
     end
 
-    describe "with invalid params" do
-      it "assigns a newly created but unsaved review as @review" do
-        # Trigger the behavior that occurs when invalid params are submitted
-        Review.any_instance.stub(:save).and_return(false)
-        post :create, {:review => { "description" => "invalid value" }}, valid_session
+    describe "GET show" do
+      it "assigns the requested review as @review" do
+        get :show, {:book_id => @approved_book.id, :id => @review.to_param}, valid_session
+        assigns(:review).should eq(@review)
+      end
+    end
+  end
+
+  context "if user is signed in" do
+    before do
+      @review.user_id = @user1.id
+      @review.save!
+      sign_in @user1
+    end
+    describe "GET new" do
+      it "assigns a new review as @review" do
+        get :new, {:book_id => @approved_book.id}, valid_session
         assigns(:review).should be_a_new(Review)
       end
-
-      it "re-renders the 'new' template" do
-        # Trigger the behavior that occurs when invalid params are submitted
-        Review.any_instance.stub(:save).and_return(false)
-        post :create, {:review => { "description" => "invalid value" }}, valid_session
-        response.should render_template("new")
-      end
     end
-  end
-
-  describe "PUT update" do
-    describe "with valid params" do
-      it "updates the requested review" do
-        review = Review.create! valid_attributes
-        # Assuming there are no other reviews in the database, this
-        # specifies that the Review created on the previous line
-        # receives the :update_attributes message with whatever params are
-        # submitted in the request.
-        Review.any_instance.should_receive(:update).with({ "description" => "MyString" })
-        put :update, {:id => review.to_param, :review => { "description" => "MyString" }}, valid_session
-      end
-
+    describe "GET edit" do
       it "assigns the requested review as @review" do
-        review = Review.create! valid_attributes
-        put :update, {:id => review.to_param, :review => valid_attributes}, valid_session
-        assigns(:review).should eq(review)
-      end
-
-      it "redirects to the review" do
-        review = Review.create! valid_attributes
-        put :update, {:id => review.to_param, :review => valid_attributes}, valid_session
-        response.should redirect_to(review)
+        get :edit, {:book_id => @approved_book.id,:id => @review.to_param}, valid_session
+        assigns(:review).should eq(@review)
       end
     end
 
-    describe "with invalid params" do
-      it "assigns the review as @review" do
-        review = Review.create! valid_attributes
-        # Trigger the behavior that occurs when invalid params are submitted
-        Review.any_instance.stub(:save).and_return(false)
-        put :update, {:id => review.to_param, :review => { "description" => "invalid value" }}, valid_session
-        assigns(:review).should eq(review)
+    describe "POST create" do
+      describe "with valid params" do
+        it "creates a new Review" do
+          expect {
+            post :create, {:book_id => @approved_book.id, :review => valid_attributes}, valid_session
+          }.to change(Review, :count).by(1)
+        end
+
+        it "assigns a newly created review as @review" do
+          post :create, {:book_id => @approved_book.id, :review => valid_attributes}, valid_session
+          assigns(:review).should be_a(Review)
+          assigns(:review).should be_persisted
+        end
+
+        it "redirects to the created review" do
+          post :create, {:book_id => @approved_book.id,:review => valid_attributes}, valid_session
+          response.should redirect_to(@approved_book)
+        end
       end
 
-      it "re-renders the 'edit' template" do
-        review = Review.create! valid_attributes
-        # Trigger the behavior that occurs when invalid params are submitted
-        Review.any_instance.stub(:save).and_return(false)
-        put :update, {:id => review.to_param, :review => { "description" => "invalid value" }}, valid_session
-        response.should render_template("edit")
+      describe "with invalid params" do
+        it "assigns a newly created but unsaved review as @review" do
+          post :create, {:book_id => @approved_book.id, :review => in_valid_attributes}, valid_session
+          assigns(:review).should be_a_new(Review)
+        end
+
+        it "re-renders the 'new' template" do
+          post :create, {:book_id => @approved_book.id, :review => in_valid_attributes}, valid_session
+          response.should render_template("new")
+        end
+      end
+    end
+
+    describe "PUT update" do
+      describe "with valid params" do
+        it "updates the requested review" do
+          put :update, {:book_id => @approved_book.id, :id => @review.to_param, :review => valid_attributes}, valid_session
+        end
+
+        it "assigns the requested review as @review" do
+          put :update, {:book_id => @approved_book.id, :id => @review.to_param, :review => valid_attributes}, valid_session
+          assigns(:review).should eq(@review)
+        end
+
+        it "redirects to the review" do
+          put :update, {:book_id => @approved_book.id, :id => @review.to_param, :review => valid_attributes}, valid_session
+          response.should redirect_to(@approved_book)
+        end
+      end
+
+      describe "with invalid params" do
+        it "assigns the review as @review" do
+          put :update, {:book_id => @approved_book.id, :id => @review.to_param, :review => valid_attributes}, valid_session
+          assigns(:review).should eq(@review)
+        end
+
+        it "re-renders the 'edit' template" do
+          put :update, {:book_id => @approved_book.id, :id => @review.to_param, :review => valid_attributes}, valid_session
+          response.should render_template("edit")
+        end
+      end
+    end
+
+    describe "DELETE destroy" do
+      it "destroys the requested review" do
+        expect {
+          delete :destroy, {:book_id => @approved_book.id, :id => @review.to_param}, valid_session
+        }.to change(Review, :count).by(-1)
+      end
+
+      it "redirects to the reviews list" do
+        delete :destroy, {:book_id => @approved_book.id, :id => @review.to_param}, valid_session
+        response.should redirect_to(request.env["HTTP_REFERER"])
       end
     end
   end
-
-  describe "DELETE destroy" do
-    it "destroys the requested review" do
-      review = Review.create! valid_attributes
-      expect {
-        delete :destroy, {:id => review.to_param}, valid_session
-      }.to change(Review, :count).by(-1)
-    end
-
-    it "redirects to the reviews list" do
-      review = Review.create! valid_attributes
-      delete :destroy, {:id => review.to_param}, valid_session
-      response.should redirect_to(reviews_url)
-    end
-  end
-
 end

@@ -37,8 +37,4 @@ describe LibraryMailer do
     LibraryMailer.invite_user("mailertest@rspec.com", @user).deliver
     ActionMailer::Base.deliveries.count.should == 1
   end
-  it "Sends email to user on becoming admin" do
-    LibraryMailer.on_admin(@user).deliver
-    ActionMailer::Base.deliveries.count.should == 1
-  end
 end

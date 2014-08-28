@@ -17,7 +17,6 @@ class UserConfigsController < ApplicationController
 
   # GET /user_configs/1/edit
   def edit
-    session[:prev_page] = request.env['HTTP_REFERER']
   end
 
   # PATCH/PUT /user_configs/1

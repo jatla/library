@@ -42,9 +42,9 @@
       </div>
     </div>
   <% end %>
-  <% if can_be_approved(@book) %>
+  <% if is_admin? && can_be_approved?(@book) %>
     <div class="control-group">
-      <%= f.label :is_approved, :class => 'control-label' %>
+      <%= f.label :approve, :class => 'control-label' %>
       <div class="controls">
         <%= f.check_box :is_approved, :class => 'check_box' %>
       </div>

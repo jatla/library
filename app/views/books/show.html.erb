@@ -3,7 +3,7 @@
   <%= menu_group :pull => :right do %>
     <% if ( user_signed_in? ) %>
       <%= drop_down_with_submenu "Actions" do %>
-        <% if ( ( is_admin? || is_owner?(@book)) ) %>
+        <% if (can? :eud, @book) %>
           <%= menu_item t('.edit', :default => t("helpers.links.edit")), edit_book_path(@book) %>
           <% if ( @book.reviews.empty? ) %>
             <%= menu_item t('.destroy', :default => t("helpers.links.destroy")), book_path(@book),

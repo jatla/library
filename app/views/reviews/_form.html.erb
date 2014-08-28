@@ -14,5 +14,5 @@
 
 <%= f.submit nil, :method => 'put', :class => 'btn btn-primary' %>
 <%= link_to t('.cancel', :default => t("helpers.links.cancel")),
-            :back, :class => 'btn' %>
+            book_path(@book), :class => 'btn' %>
 <% end %>

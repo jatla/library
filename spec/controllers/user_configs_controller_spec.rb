@@ -106,7 +106,8 @@ describe UserConfigsController do
     end
     describe "GET show" do
       it "assigns a new user_config as @user_config and set default values" do
-        get :show, {:id => nil}, valid_session
+        get :show, {:id => 999}, valid_session
+        assigns(:user_config).should be(UserConfig)
         response.should render_template("show")
       end
     end

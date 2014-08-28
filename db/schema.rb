@@ -91,7 +91,5 @@ ActiveRecord::Schema.define(version: 20140823033928) do
     t.boolean  "is_admin",           default: false
     t.boolean  "is_blocked",         default: false
   end
-
   add_index "users", ["email"], name: "index_users_on_email", unique: true
-
 end
