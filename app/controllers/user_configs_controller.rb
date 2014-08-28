@@ -23,15 +23,8 @@ class UserConfigsController < ApplicationController
   # PATCH/PUT /user_configs/1
   # PATCH/PUT /user_configs/1.json
   def update
-    respond_to do |format|
-      if @user_config.update(user_config_params)
-        format.html { redirect_to @user_config, notice: 'User config was successfully updated.' }
-        format.json { head :no_content }
-      else
-        format.html { render action: 'edit' }
-        format.json { render json: @user_config.errors, status: :unprocessable_entity }
-      end
-    end
+    @user_config.update(user_config_params)
+    respond_with(@user_config, :flash => true)
   end
 
   private

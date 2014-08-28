@@ -152,6 +152,9 @@ describe BooksController do
       @un_approved_book1.save!
     end
     describe "GET index" do
+      after do
+        @un_approved_book1.user_id = @user.id
+      end
       it "assigns only approved books and books this user is owner of as @books" do
         get :index, {}, valid_session
         assigns(:books).should eq([@approved_book, @inactive_book, @un_approved_book1])
@@ -172,9 +175,8 @@ describe BooksController do
         @un_approved_book1.user_id = @user1.id
         @un_approved_book1.save!
       end
-      it "assigns the requested book as @book only if user is the owner" do
+      it "redirect to home page if user is not owner" do
         get :edit, {:id => @un_approved_book1.to_param}, valid_session
-        assigns(:book).should eq([])
         response.should redirect_to(root_url)
       end
     end
@@ -225,7 +227,7 @@ describe BooksController do
         it "assigns the book as @book" do
           put :update, {:id => @un_approved_book1.to_param, :book => { "isbn" => nil }}, valid_session
           assigns(:book).should eq(@un_approved_book1)
-          @un_approved_book1.isbn.should eq("FG03")
+          @un_approved_book1.isbn.should start_with("RSPECISBn")
         end
         it "re-renders the 'edit' template" do
           put :update, {:id => @un_approved_book1.to_param, :book => { "isbn" => nil }}, valid_session

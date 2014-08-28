@@ -13,6 +13,7 @@ class Book < ActiveRecord::Base
 
 	mount_uploader :image, S3Uploader
     validates :title, :author, :isbn, presence: true
+    validates :isbn, uniqueness: true
 
 	def avg_rating
 		if !self.reviews.empty?
