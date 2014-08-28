@@ -53,7 +53,7 @@ class LibraryMailer < ActionMailer::Base
   def preference(by_review, by_rating, rating_threshold, review_rating)
     if (by_review)
       false
-    elsif (!by_rating && review_rating < rating_threshold)
+    elsif (by_rating && (review_rating < rating_threshold))
       false
     else
       true

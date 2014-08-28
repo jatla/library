@@ -5,20 +5,11 @@ module ApplicationHelper
 	end
 
 	def is_admin?
-		# if user_signed_in?
-		# 	current_user.try(:is_admin?)
-		# else
-		# 	false
-		# end
 		current_user.try(:is_admin?)
 	end
 
 	def is_owner? (resource)
-		if user_signed_in?
-			current_user.id == resource.try(:user_id)
-		else
-			false
-		end
+		current_user.try(:id) == resource.try(:user_id)
 	end
 
 	def can_be_approved? (resource)
@@ -30,7 +21,7 @@ module ApplicationHelper
 	end
 
 	def can_be_reviewed?(book)
-		book.is_active? && !current_user.is_blocked? 
+		book.is_active? && !current_user.try(:is_blocked?) 
 	end
 
 	def tag_helper(book)

@@ -35,8 +35,16 @@ describe ApplicationHelper do
 		it "should return false is book has no image" do
 			expect(helper.can_be_approved?(@un_approved_book)).to eq(false)
 		end
+		it "should return false is book is nil" do
+			expect(helper.can_be_approved?(nil)).to eq(false)
+		end
 	end
 	describe "tag_helper" do
+		it "should concat all tags of a book seperated by ';'" do
+			expect(helper.tag_helper(@un_approved_book)).to eq(@un_approved_book.tags.collect { |t| t.name }.join(";"))
+		end
+	end
+	describe "can_be_reviewed?" do
 		it "should concat all tags of a book seperated by ';'" do
 			expect(helper.tag_helper(@un_approved_book)).to eq(@un_approved_book.tags.collect { |t| t.name }.join(";"))
 		end
