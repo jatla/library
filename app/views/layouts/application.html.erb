@@ -43,7 +43,7 @@
           <%= nav_bar :fluid => :top, :brand => "the Library", :responsive => true do %>
             <%= menu_group :pull => :right do %>
               <% if user_signed_in? %>
-                <%= drop_down_with_submenu image_tag(current_user.avatar, class: "img-circle") do %>
+                <%= drop_down_with_submenu current_user.email do %>
                   <% if current_user.try(:is_admin?) %>
                     <%= drop_down_submenu "Admin" do %>
                       <%= menu_item "Reports", user_reports_path %>

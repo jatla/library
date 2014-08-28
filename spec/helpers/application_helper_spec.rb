@@ -49,4 +49,13 @@ describe ApplicationHelper do
 			expect(helper.tag_helper(@un_approved_book)).to eq(@un_approved_book.tags.collect { |t| t.name }.join(";"))
 		end
 	end
+	describe "bootstrap_class_for" do
+		it "should return correct boot strap class" do
+			expect(helper.bootstrap_class_for(:success)).to eq("alert-success")
+			expect(helper.bootstrap_class_for(:error)).to eq("alert-error")
+			expect(helper.bootstrap_class_for(:alert)).to eq("alert-block")
+			expect(helper.bootstrap_class_for(:notice)).to eq("alert-info")
+			expect(helper.bootstrap_class_for(:custom)).to eq("custom")
+		end
+	end
 end

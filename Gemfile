@@ -7,6 +7,7 @@ gem 'rails', '4.1.4'
 
 group :test, :development do
 	gem 'rspec-rails'
+	gem 'capybara'
 	gem 'simplecov', :require => false
 	gem "factory_girl_rails"
 	gem "faker"
