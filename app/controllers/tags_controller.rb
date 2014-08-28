@@ -1,5 +1,5 @@
 class TagsController < ApplicationController
-  before_action :set_tag, only: [:show, :edit, :update, :destroy]
+  load_and_authorize_resource param_method: :tag_params
 
   # GET /tags
   # GET /tags.json
@@ -14,9 +14,7 @@ class TagsController < ApplicationController
 
   # GET /tags/new
   def new
-    if view_context.is_admin?
       @tag = Tag.new
-    end
   end
 
   # GET /tags/1/edit
@@ -26,32 +24,26 @@ class TagsController < ApplicationController
   # POST /tags
   # POST /tags.json
   def create
-    if view_context.is_admin?
       @tag = Tag.new(tag_params)
       @tag.save!
       respond_with(@tag, :flash => true)
-    end
   end
 
   # PATCH/PUT /tags/1
   # PATCH/PUT /tags/1.json
   def update
-    if view_context.is_admin?
       @tag.update(tag_params)
       respond_with(@tag, :flash => true)
-    end
   end
 
   # DELETE /tags/1
   # DELETE /tags/1.json
   def destroy
-    if view_context.is_admin?
       @tag.destroy
       respond_to do |format|
         format.html { redirect_to tags_url }
         format.json { head :no_content }
       end
-    end
   end
 
   private

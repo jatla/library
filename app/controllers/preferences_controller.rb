@@ -1,4 +1,5 @@
 class PreferencesController < ApplicationController
+  before_action :authenticate_user!
   before_action :set_book_preference, only: [:show, :edit, :update, :destroy]
   before_action :set_book
 
@@ -9,9 +10,7 @@ class PreferencesController < ApplicationController
 
   # GET /preferences/new
   def new
-    if user_signed_in?
       @book_preference = OptedOut.new
-    end
   end
 
   # GET /preferences/1/edit
@@ -21,44 +20,33 @@ class PreferencesController < ApplicationController
   # POST /preferences
   # POST /preferences.json
   def create
-    if user_signed_in?
-      @book_preference = OptedOut.new(book_preference_params)
-      @book_preference.user_id = current_user.id
-      @book_preference.book_id = @book.id
+    @book_preference = OptedOut.new(book_preference_params)
+    @book_preference.user_id = current_user.id
+    @book_preference.book_id = @book.id
 
-      if !@book_preference.save
-        flash[:error] = "Could not create book preferences!"
-      else
-        flash[:notice] = 'Book preferences were successfully created!'
-      end
-      respond_with(@book)
+    if !@book_preference.save!
+      flash[:error] = "Could not create book preferences!"
+    else
+      flash[:notice] = 'Book preferences were successfully created!'
     end
+    redirect_to(@book)
   end
 
   # PATCH/PUT /preferences/1
   # PATCH/PUT /preferences/1.json
   def update
-    if user_signed_in?
-      if @book_preference.update(book_preference_params)
-        flash[:notice] = 'Book preferences were successfully updated.'
-      else
-        flash[:error] = 'Unable to update preferences. Please try after some time!'
-      end
-      respond_with(@book)
+    if @book_preference.update(book_preference_params)
+      flash[:notice] = 'Book preferences were successfully updated.'
+    else
+      flash[:error] = 'Unable to update preferences. Please try after some time!'
     end
-  end
-
-  # DELETE /preferences/1
-  # DELETE /preferences/1.json
-  def destroy
-    @book_preference.destroy
-    redirect_to(:back)
+    redirect_to(@book)
   end
 
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_book_preference
-      @book_preference = OptedOut.where("book_id = ? AND user_id = ?",params[:book_id], current_user.id)[0]
+      @book_preference = OptedOut.find_by_book_id_and_user_id(params[:book_id], current_user.id)
     end
 
     def set_book

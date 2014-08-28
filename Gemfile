@@ -19,7 +19,7 @@ gem 'responders'
 gem "omniauth-google-oauth2"
 gem 'devise'
 gem 'figaro'
-gem "cancan"
+gem "cancancan"
 
 # Use the following plugin for star rating
 gem 'jquery-star-rating-rails'

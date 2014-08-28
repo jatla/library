@@ -23,130 +23,183 @@ describe PreferencesController do
   # This should return the minimal set of attributes required to create a valid
   # BookPreference. As you add validations to BookPreference, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) { {  } }
+  let(:valid_attributes) { 
+    {  
+      by_rating: true,
+      rating_threshold: 1,
+      by_review: true
+    } 
+  }
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
   # BookPreferencesController. Be sure to keep this updated too.
   let(:valid_session) { {} }
 
-  describe "GET show" do
-    it "assigns the requested book_preference as @book_preference" do
-      book_preference = OptedOut.create! valid_attributes
-      get :show, {:id => book_preference.to_param}, valid_session
-      assigns(:book_preference).should eq(book_preference)
-    end
+  before do
+    OmniAuth.config.test_mode = true
+    request.env["omniauth.auth"] = OmniAuth.config.mock_auth[:google_oauth2] 
+    request.env["devise.mapping"] = Devise.mappings[:user]
+    OmniAuth.config.add_mock(:google_oauth2, {:uid => '12345'})
+    @user = create(:user)
+    @user.save!
+    @book_preference = create(:book_preferences)
+    @book_preference.save
+    @book = create(:approved_active_book, :id => 101)
+    @book.save!
+    @book1 = create(:approved_active_book, :id => 102)
+    @book1.save!
   end
 
-  describe "GET new" do
-    it "assigns a new book_preference as @book_preference" do
-      get :new, {}, valid_session
-      assigns(:book_preference).should be_a_new(BookPreference)
-    end
+  after do
+    OmniAuth.config.test_mode = false
   end
 
-  describe "GET edit" do
-    it "assigns the requested book_preference as @book_preference" do
-      book_preference = OptedOut.create! valid_attributes
-      get :edit, {:id => book_preference.to_param}, valid_session
-      assigns(:book_preference).should eq(book_preference)
-    end
-  end
-
-  describe "POST create" do
-    describe "with valid params" do
-      it "creates a new BookPreference" do
+  context "Invalid operations" do
+    describe "GET index" do
+      it "should raise ActionNotFound exception" do
         expect {
-          post :create, {:book_preference => valid_attributes}, valid_session
-        }.to change(BookPreference, :count).by(1)
-      end
-
-      it "assigns a newly created book_preference as @book_preference" do
-        post :create, {:book_preference => valid_attributes}, valid_session
-        assigns(:book_preference).should be_a(BookPreference)
-        assigns(:book_preference).should be_persisted
-      end
-
-      it "redirects to the created book_preference" do
-        post :create, {:book_preference => valid_attributes}, valid_session
-        response.should redirect_to(OptedOut.last)
+            get :index, {:book_id => @book.id}, valid_session
+          }.to raise_error(AbstractController::ActionNotFound)
       end
     end
 
-    describe "with invalid params" do
-      it "assigns a newly created but unsaved book_preference as @book_preference" do
-        # Trigger the behavior that occurs when invalid params are submitted
-        OptedOut.any_instance.stub(:save).and_return(false)
-        post :create, {:book_preference => {  }}, valid_session
-        assigns(:book_preference).should be_a_new(BookPreference)
-      end
-
-      it "re-renders the 'new' template" do
-        # Trigger the behavior that occurs when invalid params are submitted
-        OptedOut.any_instance.stub(:save).and_return(false)
-        post :create, {:book_preference => {  }}, valid_session
-        response.should render_template("new")
+    describe "DELETE destroy" do
+      it "should raise ActionNotFound exception" do
+        expect {
+            delete :destroy, {:book_id => @book.id, :id => @book_preference.to_param}, valid_session
+          }.to raise_error(AbstractController::ActionNotFound)
       end
     end
   end
 
-  describe "PUT update" do
-    describe "with valid params" do
-      it "updates the requested book_preference" do
-        book_preference = OptedOut.create! valid_attributes
-        # Assuming there are no other book_preferences in the database, this
-        # specifies that the BookPreference created on the previous line
-        # receives the :update_attributes message with whatever params are
-        # submitted in the request.
-        OptedOut.any_instance.should_receive(:update).with({ "these" => "params" })
-        put :update, {:id => book_preference.to_param, :book_preference => { "these" => "params" }}, valid_session
+  context "If user is not signed in" do
+    describe "GET show" do
+      it "should redirect user to sign in page" do
+        get :show, {:book_id => @book.id, :id => @book_preference.id}, valid_session
+        response.should redirect_to(new_user_session_url)
       end
+    end
 
+    describe "GET new" do
+      it "should redirect user to sign in page" do
+        get :new, {:book_id => @book.id}, valid_session
+        response.should redirect_to(new_user_session_url)
+      end
+    end
+
+    describe "GET edit" do
+      it "should redirect user to sign in page" do
+        get :edit, {:book_id => @book.id, :id => @book_preference.id}, valid_session
+        response.should redirect_to(new_user_session_url)
+      end
+    end
+
+    describe "POST create" do
+      it "should redirect user to sign in page" do
+        post :create, {:book_id => @book.id, :opted_out => valid_attributes}, valid_session
+        response.should redirect_to(new_user_session_url)
+      end
+    end
+
+    describe "PUT update" do
+      it "should redirect user to sign in page" do
+        put :update, {:book_id => @book.id,:id => @book_preference.to_param, :opted_out => valid_attributes }, valid_session
+        response.should redirect_to(new_user_session_url)
+      end
+    end
+  end
+
+  context "if user is signed in" do
+    before do
+      @book_preference.user_id = @user.id
+      @book_preference.book_id = @book.id
+      @book_preference.save!
+      sign_in @user
+    end
+    describe "GET show" do
       it "assigns the requested book_preference as @book_preference" do
-        book_preference = OptedOut.create! valid_attributes
-        put :update, {:id => book_preference.to_param, :book_preference => valid_attributes}, valid_session
-        assigns(:book_preference).should eq(book_preference)
-      end
-
-      it "redirects to the book_preference" do
-        book_preference = OptedOut.create! valid_attributes
-        put :update, {:id => book_preference.to_param, :book_preference => valid_attributes}, valid_session
-        response.should redirect_to(book_preference)
+        get :show, {:book_id => @book.id, :id => @book_preference.to_param}, valid_session
+        assigns(:book_preference).should eq(@book_preference)
       end
     end
 
-    describe "with invalid params" do
-      it "assigns the book_preference as @book_preference" do
-        book_preference = OptedOut.create! valid_attributes
-        # Trigger the behavior that occurs when invalid params are submitted
-        OptedOut.any_instance.stub(:save).and_return(false)
-        put :update, {:id => book_preference.to_param, :book_preference => {  }}, valid_session
-        assigns(:book_preference).should eq(book_preference)
+    describe "GET new" do
+      it "assigns a new book_preference as @book_preference" do
+        get :new, {:book_id => @book.id}, valid_session
+        assigns(:book_preference).should be_a_new(OptedOut)
+      end
+    end
+
+    describe "GET edit" do
+      it "assigns the requested book_preference as @book_preference" do
+        get :edit, {:book_id => @book.id, :id => @book_preference.to_param}, valid_session
+        assigns(:book_preference).should eq(@book_preference)
+      end
+    end
+
+    describe "POST create" do
+      describe "with valid params" do
+        it "doesnt create a new BookPreference if one already exists" do
+          expect {
+            post :create, {:book_id => @book.id, :opted_out => valid_attributes}, valid_session
+          }.to change(OptedOut, :count).by(0)
+        end
+
+        it "creates a new BookPreference if doesn't exist" do
+          expect {
+            post :create, {:book_id => @book1.id, :opted_out => valid_attributes}, valid_session
+          }.to change(OptedOut, :count).by(1)
+        end
+
+        it "assigns a newly created book_preference as @book_preference" do
+          post :create, {:book_id => @book.id, :opted_out => valid_attributes}, valid_session
+          assigns(:book_preference).should be_a(OptedOut)
+          assigns(:book_preference).should be_persisted
+        end
+
+        it "redirects to the book" do
+          post :create, {:book_id => @book.id, :opted_out => valid_attributes}, valid_session
+          response.should redirect_to(@book)
+        end
       end
 
-      it "re-renders the 'edit' template" do
-        book_preference = OptedOut.create! valid_attributes
-        # Trigger the behavior that occurs when invalid params are submitted
-        OptedOut.any_instance.stub(:save).and_return(false)
-        put :update, {:id => book_preference.to_param, :book_preference => {  }}, valid_session
-        response.should render_template("edit")
+      describe "redirects to the book" do
+        it "re-renders the 'new' template" do
+          post :create, {:book_id => @book.id, :opted_out => { "invalid" => "parameter" }}, valid_session
+          response.should redirect_to(@book)
+        end
+      end
+    end
+
+    describe "PUT update" do
+      describe "with valid params" do
+        it "updates the requested book_preference" do
+          put :update, {:book_id => @book.id, :id => @book_preference.to_param, :opted_out => valid_attributes}, valid_session
+        end
+
+        it "assigns the requested book_preference as @book_preference" do
+          put :update, {:book_id => @book.id, :id => @book_preference.to_param, :opted_out => valid_attributes}, valid_session
+          assigns(:book_preference).should eq(@book_preference)
+        end
+
+        it "redirects to the book" do
+          put :update, {:book_id => @book.id, :id => @book_preference.to_param, :opted_out => valid_attributes}, valid_session
+          response.should redirect_to(@book)
+        end
+      end
+
+      describe "with invalid params" do
+        it "assigns the book_preference as @book_preference" do
+          put :update, {:book_id => @book.id, :id => @book_preference.to_param, :opted_out => { "invalid" => "parameter" }}, valid_session
+          assigns(:book_preference).should eq(@book_preference)
+        end
+
+        it "re-renders the 'edit' template" do
+          put :update, {:book_id => @book.id, :id => @book_preference.to_param, :opted_out => { "invalid" => "parameter" }}, valid_session
+          response.should render_template("edit")
+        end
       end
     end
   end
-
-  describe "DELETE destroy" do
-    it "destroys the requested book_preference" do
-      book_preference = OptedOut.create! valid_attributes
-      expect {
-        delete :destroy, {:id => book_preference.to_param}, valid_session
-      }.to change(BookPreference, :count).by(-1)
-    end
-
-    it "redirects to the book_preferences list" do
-      book_preference = OptedOut.create! valid_attributes
-      delete :destroy, {:id => book_preference.to_param}, valid_session
-      response.should redirect_to(book_preferences_url)
-    end
-  end
-
 end

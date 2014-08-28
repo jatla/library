@@ -13,6 +13,10 @@ class ApplicationController < ActionController::Base
   end
 
   rescue_from Exception do |exception|
-    redirect_to root_url, :alert => "You are here most probably because you are not authorized!"
+    begin
+      redirect_to :back, :alert => exception.message
+    rescue Exception => e
+      redirect_to root_url, :alert => exception.message
+    end
   end
 end

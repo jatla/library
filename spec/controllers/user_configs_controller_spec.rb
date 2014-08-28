@@ -23,138 +23,146 @@ describe UserConfigsController do
   # This should return the minimal set of attributes required to create a valid
   # UserConfig. As you add validations to UserConfig, be sure to
   # adjust the attributes here as well.
-  let(:valid_attributes) { { "update" => "MyString" } }
+  let(:valid_attributes) { 
+    { :rating_threshold => 2,
+      :opt_out_by_rating => true,
+      :opt_out_by_review => true,
+      :daily_digest_enabled => true
+    } 
+  }
 
   # This should return the minimal set of values that should be in the session
   # in order to pass any filters (e.g. authentication) defined in
   # UserConfigsController. Be sure to keep this updated too.
   let(:valid_session) { {} }
 
-  describe "GET index" do
-    it "assigns all user_configs as @user_configs" do
-      user_config = UserConfig.create! valid_attributes
-      get :index, {}, valid_session
-      assigns(:user_configs).should eq([user_config])
-    end
+  before do
+    OmniAuth.config.test_mode = true
+    request.env["omniauth.auth"] = OmniAuth.config.mock_auth[:google_oauth2] 
+    request.env["devise.mapping"] = Devise.mappings[:user]
+    OmniAuth.config.add_mock(:google_oauth2, {:uid => '12345'})
+    @user1 = create(:user, :id => 10)
+    @user1.save!
+    @user2 = create(:user, :id => 11)
+    @user2.save!
+    @user_config1 = create(:user_config, :id => 10)
+    @user_config2 = create(:user_config, :id => 11)
   end
 
-  describe "GET show" do
-    it "assigns the requested user_config as @user_config" do
-      user_config = UserConfig.create! valid_attributes
-      get :show, {:id => user_config.to_param}, valid_session
-      assigns(:user_config).should eq(user_config)
-    end
+  after do
+    OmniAuth.config.test_mode = false
   end
 
-  describe "GET new" do
-    it "assigns a new user_config as @user_config" do
-      get :new, {}, valid_session
-      assigns(:user_config).should be_a_new(UserConfig)
+  context "Invalid operations" do
+    describe "GET index" do
+      it "should raise ActionNotFound exception" do
+        expect {
+          get :index, {}, valid_session
+          }.to raise_error(AbstractController::ActionNotFound)
+      end
     end
-  end
-
-  describe "GET edit" do
-    it "assigns the requested user_config as @user_config" do
-      user_config = UserConfig.create! valid_attributes
-      get :edit, {:id => user_config.to_param}, valid_session
-      assigns(:user_config).should eq(user_config)
+    describe "GET new" do
+      it "should raise ActionNotFound exception" do
+        expect {
+          get :new, {}, valid_session
+          }.to raise_error(AbstractController::ActionNotFound)
+      end
     end
-  end
-
-  describe "POST create" do
-    describe "with valid params" do
-      it "creates a new UserConfig" do
+    describe "POST create" do
+      it "should raise ActionNotFound exception" do
         expect {
           post :create, {:user_config => valid_attributes}, valid_session
-        }.to change(UserConfig, :count).by(1)
-      end
-
-      it "assigns a newly created user_config as @user_config" do
-        post :create, {:user_config => valid_attributes}, valid_session
-        assigns(:user_config).should be_a(UserConfig)
-        assigns(:user_config).should be_persisted
-      end
-
-      it "redirects to the created user_config" do
-        post :create, {:user_config => valid_attributes}, valid_session
-        response.should redirect_to(UserConfig.last)
+          }.to raise_error(AbstractController::ActionNotFound)
       end
     end
-
-    describe "with invalid params" do
-      it "assigns a newly created but unsaved user_config as @user_config" do
-        # Trigger the behavior that occurs when invalid params are submitted
-        UserConfig.any_instance.stub(:save).and_return(false)
-        post :create, {:user_config => { "update" => "invalid value" }}, valid_session
-        assigns(:user_config).should be_a_new(UserConfig)
-      end
-
-      it "re-renders the 'new' template" do
-        # Trigger the behavior that occurs when invalid params are submitted
-        UserConfig.any_instance.stub(:save).and_return(false)
-        post :create, {:user_config => { "update" => "invalid value" }}, valid_session
-        response.should render_template("new")
+    describe "DELETE destroy" do
+      it "should raise ActionNotFound exception" do
+        expect {
+          delete :destroy, {:id => @user_config1.to_param}, valid_session
+        }.to raise_error(AbstractController::ActionNotFound)
       end
     end
   end
 
-  describe "PUT update" do
-    describe "with valid params" do
-      it "updates the requested user_config" do
-        user_config = UserConfig.create! valid_attributes
-        # Assuming there are no other user_configs in the database, this
-        # specifies that the UserConfig created on the previous line
-        # receives the :update_attributes message with whatever params are
-        # submitted in the request.
-        UserConfig.any_instance.should_receive(:update).with({ "update" => "MyString" })
-        put :update, {:id => user_config.to_param, :user_config => { "update" => "MyString" }}, valid_session
-      end
-
-      it "assigns the requested user_config as @user_config" do
-        user_config = UserConfig.create! valid_attributes
-        put :update, {:id => user_config.to_param, :user_config => valid_attributes}, valid_session
-        assigns(:user_config).should eq(user_config)
-      end
-
-      it "redirects to the user_config" do
-        user_config = UserConfig.create! valid_attributes
-        put :update, {:id => user_config.to_param, :user_config => valid_attributes}, valid_session
-        response.should redirect_to(user_config)
+  context "if user is not signed in" do
+    describe "GET show" do
+      it "should redirect user to sign in page" do
+        get :show, {:id => @user_config1.to_param}, valid_session
+        response.should redirect_to(new_user_session_url)
       end
     end
 
-    describe "with invalid params" do
-      it "assigns the user_config as @user_config" do
-        user_config = UserConfig.create! valid_attributes
-        # Trigger the behavior that occurs when invalid params are submitted
-        UserConfig.any_instance.stub(:save).and_return(false)
-        put :update, {:id => user_config.to_param, :user_config => { "update" => "invalid value" }}, valid_session
-        assigns(:user_config).should eq(user_config)
-      end
-
-      it "re-renders the 'edit' template" do
-        user_config = UserConfig.create! valid_attributes
-        # Trigger the behavior that occurs when invalid params are submitted
-        UserConfig.any_instance.stub(:save).and_return(false)
-        put :update, {:id => user_config.to_param, :user_config => { "update" => "invalid value" }}, valid_session
-        response.should render_template("edit")
+    describe "GET edit" do
+      it "should redirect user to sign in page" do
+        get :edit, {:id => @user_config1.to_param}, valid_session
+        response.should redirect_to(new_user_session_url)
       end
     end
   end
 
-  describe "DELETE destroy" do
-    it "destroys the requested user_config" do
-      user_config = UserConfig.create! valid_attributes
-      expect {
-        delete :destroy, {:id => user_config.to_param}, valid_session
-      }.to change(UserConfig, :count).by(-1)
+  context "if user is signed in with no config" do
+    before do
+      sign_in @user2
     end
-
-    it "redirects to the user_configs list" do
-      user_config = UserConfig.create! valid_attributes
-      delete :destroy, {:id => user_config.to_param}, valid_session
-      response.should redirect_to(user_configs_url)
+    describe "GET show" do
+      it "assigns a new user_config as @user_config and set default values" do
+        get :show, {:id => nil}, valid_session
+        response.should render_template("show")
+      end
     end
   end
+  context "if user is signed in" do
+    before do
+      sign_in @user1
+      @user_config1.user_id = @user1.id
+      @user_config1.save!
+    end
+    describe "GET show" do
+      it "assigns the the logged in user's user_config as @user_config" do
+        get :show, {:id => @user_config1.to_param}, valid_session
+        assigns(:user_config).should eq(@user_config1)
+      end
+      it "should not show different users config" do
+        get :show, {:id => @user_config2.to_param}, valid_session
+        assigns(:user_config).should eq(@user_config1)
+      end
+    end
+    describe "GET edit" do
+      it "assigns the the logged in user's user_config as @user_config" do
+        get :show, {:id => @user_config1.to_param}, valid_session
+        assigns(:user_config).should eq(@user_config1)
+      end
+      it "should not show different users config" do
+        get :show, {:id => @user_config1.to_param}, valid_session
+        assigns(:user_config).should eq(@user_config1)
+      end
+    end
 
+    describe "PUT update" do
+      describe "with valid params" do
+        it "updates the requested user_config" do
+          put :update, {:id => @user_config1.to_param, :user_config => valid_attributes}, valid_session
+        end
+        it "assigns the requested user_config as @user_config" do
+          put :update, {:id => @user_config1.to_param, :user_config => valid_attributes}, valid_session
+          assigns(:user_config).should eq(@user_config1)
+        end
+        it "redirects to the user_config" do
+          put :update, {:id => @user_config1.to_param, :user_config => valid_attributes}, valid_session
+          response.should redirect_to(@user_config1)
+        end
+      end
+
+      describe "with invalid params" do
+        it "assigns the user_config as @user_config" do
+          put :update, {:id => @user_config1.to_param, :user_config => { "update" => "invalid value" }}, valid_session
+          assigns(:user_config).should eq(@user_config1)
+        end
+        it "re-renders the 'edit' template" do
+          put :update, {:id => @user_config1.to_param, :user_config => { "update" => "invalid value" }}, valid_session
+          response.should render_template("edit")
+        end
+      end
+    end
+  end
 end

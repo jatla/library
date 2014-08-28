@@ -2,5 +2,7 @@
 
 FactoryGirl.define do
   factory :tag do
+  	name Faker::Lorem.word
+  	description Faker::Lorem.sentence(5)
   end
 end

@@ -211,7 +211,6 @@ describe BooksController do
         it "updates the requested book only if current user is the owner" do
           put :update, {:id => @un_approved_book1.to_param, :book => valid_attributes}, valid_session
           assigns(:book).should eq(@un_approved_book1)
-          puts @un_approved_book1.author
         end
         it "assigns the requested book as @book" do
           put :update, {:id => @un_approved_book1.to_param, :book => valid_attributes}, valid_session

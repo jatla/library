@@ -1,9 +1,8 @@
 class UserConfigsController < ApplicationController
-  before_action :set_user_config, only: [:edit, :update]
   before_action :authenticate_user!
+  before_action :set_user_config, only: [:show, :edit, :update]
 
   def show
-    @user_config = UserConfig.where("user_id = ?", current_user.id)[0]
     if @user_config.nil?
       @user_config = UserConfig.new
       @user_config.user_id = current_user.id
@@ -38,7 +37,7 @@ class UserConfigsController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_user_config
-      @user_config = UserConfig.find(params[:id])
+      @user_config = UserConfig.find_by(user_id: current_user.id)
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
