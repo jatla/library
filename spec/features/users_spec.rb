@@ -47,9 +47,8 @@ describe "Users", :type => :feature do
       logout(:user)
     end
     it "should have Admin link" do
-      click_link(@admin.email)
-      click_link('Admin')
-      click_link('Users')
+      vist users_path
+      expect(page).to have_content 'Users'
     end
   end
 end
