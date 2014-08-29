@@ -11,10 +11,9 @@ Test Coverage: {<img src="https://codeclimate.com/github/jatla/library/badges/co
 
 * Ruby Version: 2.1.2
 * Rails Version: 4.1.4
-
 * Get the application and do 'bundle install'.
 
-* Using google authentication
+==== Using google authentication
 	- Setup new project at https://code.google.com/apis/console.Get CLIENT ID & CLIENT SECRET and set in application.yml at Rails.root/config.
 
 	GOOGLE_APP_ID: <CLIENT ID>
@@ -23,16 +22,16 @@ Test Coverage: {<img src="https://codeclimate.com/github/jatla/library/badges/co
 	- Enable Contacts API and Google+ API.
 	- Set REDIRECT URIS value to http://<host:port>/users/auth/google_oauth2/callback
 
-* AWS Setup:
+==== AWS Setup:
 
-	- Visit http://aws.amazon.com for creating account before proceeding.
+* Visit http://aws.amazon.com for creating account before proceeding.
 
 		Add the following information about your AWS account to application.yml
 		AWS_ACCESS_KEY: <access key>
 		AWS_SECRET_KEY: <secret key>
 		AWS_REGION: <aws region> http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-regions-availability-zones
 
-	SES:
+* SES:
 
 		This application uses AWS SimpleEmailService for sending mails. Visit http://docs.aws.amazon.com/ses/latest/DeveloperGuide/setting-up-ses.html to setup SES.
 
@@ -55,7 +54,7 @@ Test Coverage: {<img src="https://codeclimate.com/github/jatla/library/badges/co
 
 		Dont forget to change the spf record of your domain to allow emails from amazonses.com
 
-	S3:
+* S3:
 
 		AWS SimpleStorageService is used to store book images. For detailed setup instructions follow http://docs.aws.amazon.com/AmazonS3/latest/gsg/SigningUpforS3.html.
 
