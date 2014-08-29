@@ -27,41 +27,41 @@ Test Coverage: {<img src="https://codeclimate.com/github/jatla/library/badges/co
 
 	- Visit http://aws.amazon.com for creating account before proceeding.
 
-	Add the following information about your AWS account to application.yml
-	AWS_ACCESS_KEY: <access key>
-	AWS_SECRET_KEY: <secret key>
-	AWS_REGION: <aws region> http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-regions-availability-zones
+		Add the following information about your AWS account to application.yml
+		AWS_ACCESS_KEY: <access key>
+		AWS_SECRET_KEY: <secret key>
+		AWS_REGION: <aws region> http://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#concepts-regions-availability-zones
 
 	SES:
 
-	This application uses AWS SimpleEmailService for sending mails. Visit http://docs.aws.amazon.com/ses/latest/DeveloperGuide/setting-up-ses.html to setup SES.
+		This application uses AWS SimpleEmailService for sending mails. Visit http://docs.aws.amazon.com/ses/latest/DeveloperGuide/setting-up-ses.html to setup SES.
 
-	Add the following lines to your application.yml
-	AWS_SES_SMTP_ENDPOINT: email-smtp.us-west-2.amazonaws.com <or anyone that you prefer>
-	SMTP_USER: <SMTP USER>
-	SMTP_PWD: <SMTP PASSWORD>
+		Add the following lines to your application.yml
+		AWS_SES_SMTP_ENDPOINT: email-smtp.us-west-2.amazonaws.com <or anyone that you prefer>
+		SMTP_USER: <SMTP USER>
+		SMTP_PWD: <SMTP PASSWORD>
 
-	config.action_mailer.delivery_method = :smtp
-	config.action_mailer.smtp_settings = {
-	  :address => ENV["AWS_SES_SMTP_ENDPOINT"],
-	  :user_name => ENV["SMTP_USER"], # Your SMTP user here.
-	  :password => ENV["SMTP_PWD"], # Your SMTP password here.
-	  :domain => <Your domain name>,
-	  :port => 465,
-	  :authentication => :login,
-	  :enable_starttls_auto => true,
-	  :ssl => true
-	}
+		config.action_mailer.delivery_method = :smtp
+		config.action_mailer.smtp_settings = {
+		  :address => ENV["AWS_SES_SMTP_ENDPOINT"],
+		  :user_name => ENV["SMTP_USER"], # Your SMTP user here.
+		  :password => ENV["SMTP_PWD"], # Your SMTP password here.
+		  :domain => <Your domain name>,
+		  :port => 465,
+		  :authentication => :login,
+		  :enable_starttls_auto => true,
+		  :ssl => true
+		}
 
-	Dont forget to change the spf record of your domain to allow emails from amazonses.com
+		Dont forget to change the spf record of your domain to allow emails from amazonses.com
 
 	S3:
 
-	AWS SimpleStorageService is used to store book images. For detailed setup instructions follow http://docs.aws.amazon.com/AmazonS3/latest/gsg/SigningUpforS3.html.
+		AWS SimpleStorageService is used to store book images. For detailed setup instructions follow http://docs.aws.amazon.com/AmazonS3/latest/gsg/SigningUpforS3.html.
 
-	Create a S3 bucket. This application uses carrierwave and fog gems to interact with S3. Set the following config in carrierwave.rb.
+		Create a S3 bucket. This application uses carrierwave and fog gems to interact with S3. Set the following config in carrierwave.rb.
 
-	config.fog_directory  = 'your-bucket-name'  
+		config.fog_directory  = 'your-bucket-name'  
 
 
 
